@@ -1,4 +1,4 @@
-# ForensiQ
+# Decipher
 
 ## Project architecture
 
