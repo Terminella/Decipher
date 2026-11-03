@@ -3,7 +3,7 @@
 ## Project architecture
 
 ```text
-ForensiQ/
+Decipher/
 ├── README.md
 ├── .gitignore
 ├── .env.example
