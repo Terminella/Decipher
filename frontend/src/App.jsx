@@ -1,5 +1,10 @@
+import FindingsPage from './pages/FindingsPage'
+import { useEffect, useState } from 'react'
+import DossierPage from './pages/DossierPage'
 import UploadPage from './pages/UploadPage'
-import { useState } from 'react'
+import InvestigationPage from './pages/InvestigationPage'
+import SettingsPage from './pages/SettingsPage'
+
 import {
   LayoutDashboard,
   FolderSearch,
@@ -501,10 +506,10 @@ function Dashboard({ onNavigate }) {
 function PlaceholderPage({ page, onNavigate }) {
   const pageIcons = {
     'Upload Documents': Upload,
-    'Investigations': FolderSearch,
-    'Findings': FileSearch,
+    Investigations: FolderSearch,
+    Findings: FileSearch,
     'Dossiers & Reports': FileText,
-    'Settings': Settings,
+    Settings: Settings,
     'New Investigation': FolderSearch,
     'Recent Activity': Activity,
   }
@@ -547,6 +552,19 @@ export default function App() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [notificationOpen, setNotificationOpen] = useState(false)
+
+  // ==========================================
+  // GLOBAL THEME SETTINGS
+  // ==========================================
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('decipher-theme') || 'dark'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('decipher-theme', theme)
+  }, [theme])
 
   const navigate = (page) => {
     setActivePage(page)
@@ -640,16 +658,27 @@ export default function App() {
         {/* Page Content */}
 
         <div className="page-content">
-          {activePage === 'Dashboard' ? (  
-             <Dashboard onNavigate={navigate} />
-          ) : activePage === 'Upload Documents' ? (
-            <UploadPage />
-          ) : (
-            <PlaceholderPage
-                page={activePage}
-                onNavigate={navigate}
-            />
-        )}
+  {activePage === 'Dashboard' ? (
+    <Dashboard onNavigate={navigate} />
+  ) : activePage === 'Upload Documents' ? (
+    <UploadPage />
+  ) : activePage === 'Investigations' ? (
+    <InvestigationPage onNavigate={navigate} />
+  ) : activePage === 'Findings' ? (
+    <FindingsPage />
+  ) : activePage === 'Dossiers & Reports' ? (
+    <DossierPage />
+  ) : activePage === 'Settings' ? (
+    <SettingsPage
+      theme={theme}
+      onThemeChange={setTheme}
+    />
+  ) : (
+    <PlaceholderPage
+      page={activePage}
+      onNavigate={navigate}
+    />
+  )}
 
           {/* Footer */}
 
