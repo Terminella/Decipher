@@ -26,7 +26,7 @@
 
   color: #E8EEF8;
 
-  background: #101827;
+  background: #120C09;
 
   font-synthesis: none;
 
@@ -34,17 +34,17 @@
 
   -webkit-font-smoothing: antialiased;
 
-  --bg-main: #101827;
+  --bg-main: #120C09;
 
-  --bg-sidebar: #111D30;
+  --bg-sidebar: #1B110D;
 
-  --bg-card: #1B2940;
+  --bg-card: #291A14;
 
-  --bg-card-hover: #22334C;
+  --bg-card-hover: #38241B;
 
-  --bg-input: #202F45;
+  --bg-input: #332119;
 
-  --border: #304159;
+  --border: #4A3024;
 
   --text-main: #F1F5FB;
 
@@ -52,9 +52,9 @@
 
   --text-muted: #8292A9;
 
-  --teal: #17B8AE;
+  --teal: #C87543;
 
-  --purple: #9684F2;
+  --purple: #B88A68;
 
   --amber: #F1B45E;
 
@@ -118,7 +118,7 @@ button {
 
 button:focus-visible {
 
-  outline: 3px solid #55D5CC;
+  outline: 3px solid #E0A06E;
 
   outline-offset: 3px;
 
@@ -172,7 +172,7 @@ button:focus-visible {
 
   background: var(--bg-sidebar);
 
-  border-right: 1px solid #293950;
+  border-right: 1px solid #3B271E;
 
   color: white;
 
@@ -240,11 +240,11 @@ button:focus-visible {
 
   border-radius: 13px;
 
-  background: linear-gradient(145deg, #22C8BC, #128A91);
+  background: linear-gradient(145deg, #D58A58, #A95732);
 
   color: white;
 
-  box-shadow: 0 5px 20px #17B8AE35;
+  box-shadow: 0 5px 20px #C8754335;
 
 }
 
@@ -364,7 +364,7 @@ button:focus-visible {
 
 .nav-active {
 
-  background: linear-gradient(100deg, #17A6A1, #138F98);
+  background: linear-gradient(100deg, #B96538, #A95732);
 
   color: white;
 
@@ -418,7 +418,7 @@ button:focus-visible {
 
   border-radius: 50%;
 
-  background: #7566D9;
+  background: #956B4E;
 
   color: white;
 
@@ -484,7 +484,7 @@ button:focus-visible {
 
   padding: 0 40px;
 
-  background: #17243A;
+  background: #21140F;
 
   border-bottom: 1px solid var(--border);
 
@@ -544,7 +544,7 @@ button:focus-visible {
 
   padding: 0 12px;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 9px;
 
@@ -614,7 +614,7 @@ button:focus-visible {
 
   place-items: center;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 9px;
 
@@ -718,7 +718,7 @@ button:focus-visible {
 
   margin-bottom: 13px;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
   font-size: 12px;
 
@@ -740,7 +740,7 @@ button:focus-visible {
 
   background: var(--teal);
 
-  box-shadow: 0 0 0 5px #17B8AE22;
+  box-shadow: 0 0 0 5px #C8754322;
 
 }
 
@@ -830,11 +830,11 @@ button:focus-visible {
 
   border: 1px solid var(--teal);
 
-  background: linear-gradient(120deg, #17B8AE, #128E91);
+  background: linear-gradient(120deg, #C87543, #A95732);
 
   color: white;
 
-  box-shadow: 0 5px 15px #17B8AE25;
+  box-shadow: 0 5px 15px #C8754325;
 
 }
 
@@ -846,7 +846,7 @@ button:focus-visible {
 
   background: #159E98;
 
-  box-shadow: 0 7px 20px #17B8AE35;
+  box-shadow: 0 7px 20px #C8754335;
 
 }
 
@@ -854,9 +854,9 @@ button:focus-visible {
 
 .button-secondary {
 
-  border: 1px solid #40536C;
+  border: 1px solid #5A3B2B;
 
-  background: #24344C;
+  background: #3A251B;
 
   color: #E6EDF7;
 
@@ -868,9 +868,9 @@ button:focus-visible {
 
   border-color: var(--teal);
 
-  background: #2A4055;
+  background: #493020;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
 }
 
@@ -962,9 +962,9 @@ button:focus-visible {
 
 .icon-teal {
 
-  background: #17B8AE22;
+  background: #C8754322;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -974,7 +974,7 @@ button:focus-visible {
 
   background: #9684F222;
 
-  color: #B3A5FF;
+  color: #D2AD8C;
 
 }
 
@@ -1016,7 +1016,7 @@ button:focus-visible {
 
   border-radius: 8px;
 
-  background: #293A53;
+  background: #422C20;
 
   color: #B9C8DC;
 
@@ -1028,9 +1028,9 @@ button:focus-visible {
 
 .table-action:hover {
 
-  background: #24514F;
+  background: #563323;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
 }
 
@@ -1172,7 +1172,7 @@ button:focus-visible {
 
   background: transparent;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
   font-size: 12px;
 
@@ -1226,7 +1226,7 @@ button:focus-visible {
 
   padding: 15px;
 
-  background: #202F45;
+  background: #332119;
 
   color: #AAB8CC;
 
@@ -1256,7 +1256,7 @@ button:focus-visible {
 
   padding: 19px 15px;
 
-  border-bottom: 1px solid #304159;
+  border-bottom: 1px solid #4A3024;
 
   color: #C2CDDC;
 
@@ -1368,7 +1368,7 @@ button:focus-visible {
 
   background: #7566D933;
 
-  color: #B6A8FF;
+  color: #D2AD8C;
 
 }
 
@@ -1394,7 +1394,7 @@ button:focus-visible {
 
 .activity-heading-icon {
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -1416,7 +1416,7 @@ button:focus-visible {
 
   padding: 17px 0;
 
-  border-bottom: 1px solid #304159;
+  border-bottom: 1px solid #4A3024;
 
 }
 
@@ -1496,7 +1496,7 @@ button:focus-visible {
 
   background: #243A50;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
   font-size: 12px;
 
@@ -1508,7 +1508,7 @@ button:focus-visible {
 
 .activity-footer:hover {
 
-  background: #2B485B;
+  background: #503321;
 
 }
 
@@ -1542,7 +1542,7 @@ button:focus-visible {
 
   text-align: center;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -1610,7 +1610,7 @@ button:focus-visible {
 
   border-radius: 12px;
 
-  background: linear-gradient(105deg, #193B45, #292D4D);
+  background: linear-gradient(105deg, #382116, #292D4D);
 
 }
 
@@ -1630,9 +1630,9 @@ button:focus-visible {
 
   border-radius: 11px;
 
-  background: #245B60;
+  background: #67402A;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
 }
 
@@ -1688,9 +1688,9 @@ button:focus-visible {
 
   border-radius: 8px;
 
-  background: #263C51;
+  background: #42291E;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
   font-size: 11px;
 
@@ -1704,7 +1704,7 @@ button:focus-visible {
 
 .banner-action:hover {
 
-  background: #34566A;
+  background: #563724;
 
 }
 
@@ -1748,7 +1748,7 @@ button:focus-visible {
 
   border-radius: 17px;
 
-  background: #243F52;
+  background: #40271C;
 
   color: #62D8CF;
 
@@ -2160,9 +2160,9 @@ button:focus-visible {
 
   border-radius: 9px;
 
-  background: #193B3C;
+  background: #3A2419;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
   font-size: 12px;
 
@@ -2248,9 +2248,9 @@ button:focus-visible {
 
   border-radius: 7px;
 
-  background: #243F52;
+  background: #40271C;
 
-  color: #6AE0D6;
+  color: #E8AD7B;
 
   font-size: 11px;
 
@@ -2280,11 +2280,11 @@ button:focus-visible {
 
   padding: 30px 20px;
 
-  border: 2px dashed #40536C;
+  border: 2px dashed #5A3B2B;
 
   border-radius: 12px;
 
-  background: #17243A;
+  background: #21140F;
 
   text-align: center;
 
@@ -2298,9 +2298,9 @@ button:focus-visible {
 
 .drop-zone.drag-active {
 
-  border-color: #17B8AE;
+  border-color: #C87543;
 
-  background: #19343F;
+  background: #352118;
 
 }
 
@@ -2320,9 +2320,9 @@ button:focus-visible {
 
   border-radius: 18px;
 
-  background: #17B8AE22;
+  background: #C8754322;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -2424,11 +2424,11 @@ button:focus-visible {
 
   padding: 6px 10px;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 6px;
 
-  background: #24344C;
+  background: #3A251B;
 
   color: #D1DBE9;
 
@@ -2538,13 +2538,13 @@ button:focus-visible {
 
   gap: 12px;
 
-  border: 1px dashed #40536C;
+  border: 1px dashed #5A3B2B;
 
   border-radius: 10px;
 
-  background: #17243A;
+  background: #21140F;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -2592,11 +2592,11 @@ button:focus-visible {
 
   padding: 14px;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 9px;
 
-  background: #202F45;
+  background: #332119;
 
 }
 
@@ -2616,9 +2616,9 @@ button:focus-visible {
 
   border-radius: 10px;
 
-  background: #17B8AE22;
+  background: #C8754322;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -2730,11 +2730,11 @@ button:focus-visible {
 
   padding: 18px;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 9px;
 
-  background: #17243A;
+  background: #21140F;
 
 }
 
@@ -2810,7 +2810,7 @@ button:focus-visible {
 
   border-radius: 8px;
 
-  background: #193B3C;
+  background: #3A2419;
 
   color: #79DFB2;
 
@@ -2836,13 +2836,13 @@ button:focus-visible {
 
   padding: 18px;
 
-  border: 1px solid #35465F;
+  border: 1px solid #4A3024;
 
   border-radius: 10px;
 
-  background: #17243A;
+  background: #21140F;
 
-  color: #55D5CC;
+  color: #E0A06E;
 
 }
 
@@ -3042,7 +3042,7 @@ button:focus-visible {
 
   display: block;
 
-  color: #17b8ae;
+  color: #C87543;
 
   font-size: 12px;
 
@@ -3090,7 +3090,7 @@ button:focus-visible {
 
   gap: 9px;
 
-  background: #17a99f;
+  background: #BE7043;
 
   color: #ffffff;
 
@@ -3146,9 +3146,9 @@ button:focus-visible {
 
   padding: 21px;
 
-  background: #1b2940;
+  background: #291A14;
 
-  border: 1px solid #2a3a52;
+  border: 1px solid #38251D;
 
   border-radius: 12px;
 
@@ -3276,9 +3276,9 @@ button:focus-visible {
 
   color: #8e9db2;
 
-  background: #1b2940;
+  background: #291A14;
 
-  border: 1px solid #2a3a52;
+  border: 1px solid #38251D;
 
   border-radius: 8px;
 
@@ -3364,9 +3364,9 @@ button:focus-visible {
 
   color: #aab7c9;
 
-  background: #1b2940;
+  background: #291A14;
 
-  border: 1px solid #2a3a52;
+  border: 1px solid #38251D;
 
   border-radius: 7px;
 
@@ -3382,7 +3382,7 @@ button:focus-visible {
 
 .investigation-filter-btn:hover {
 
-  border-color: #17a99f;
+  border-color: #BE7043;
 
   color: #ffffff;
 
@@ -3392,7 +3392,7 @@ button:focus-visible {
 
 .investigation-filter-btn.active {
 
-  color: #4adbd0;
+  color: #D99565;
 
   background: #173b42;
 
@@ -3404,9 +3404,9 @@ button:focus-visible {
 
 .investigation-list-panel {
 
-  background: #1b2940;
+  background: #291A14;
 
-  border: 1px solid #2a3a52;
+  border: 1px solid #38251D;
 
   border-radius: 12px;
 
@@ -3426,7 +3426,7 @@ button:focus-visible {
 
   padding: 21px 23px;
 
-  border-bottom: 1px solid #2a3a52;
+  border-bottom: 1px solid #38251D;
 
 }
 
@@ -3566,7 +3566,7 @@ button:focus-visible {
 
   padding: 16px 5px;
 
-  border-bottom: 1px solid #2a3a52;
+  border-bottom: 1px solid #38251D;
 
 }
 
@@ -3690,9 +3690,9 @@ button:focus-visible {
 
   overflow-y: auto;
 
-  background: #1b2940;
+  background: #291A14;
 
-  border: 1px solid #34465f;
+  border: 1px solid #4A3024;
 
   border-radius: 15px;
 
@@ -3786,9 +3786,9 @@ button:focus-visible {
 
   color: #aab8ca;
 
-  background: #26364d;
+  background: #3A261D;
 
-  border: 1px solid #3a4b63;
+  border: 1px solid #503527;
 
   border-radius: 8px;
 
@@ -3802,7 +3802,7 @@ button:focus-visible {
 
   color: #ffffff;
 
-  background: #34465f;
+  background: #4A3024;
 
 }
 
@@ -3852,9 +3852,9 @@ button:focus-visible {
 
   color: #e8edf5;
 
-  background: #111d30;
+  background: #1B110D;
 
-  border: 1px solid #35465e;
+  border: 1px solid #4A3024;
 
   border-radius: 8px;
 
@@ -3876,7 +3876,7 @@ button:focus-visible {
 
 .investigation-form-group textarea:focus {
 
-  border-color: #17b8ae;
+  border-color: #C87543;
 
 }
 
@@ -3894,7 +3894,7 @@ button:focus-visible {
 
 .investigation-form-group select option {
 
-  background: #111d30;
+  background: #1B110D;
 
   color: #e8edf5;
 
@@ -3938,7 +3938,7 @@ button:focus-visible {
 
   margin-top: 7px;
 
-  border-top: 1px solid #34465f;
+  border-top: 1px solid #4A3024;
 
 }
 
@@ -3952,7 +3952,7 @@ button:focus-visible {
 
   background: transparent;
 
-  border: 1px solid #40516a;
+  border: 1px solid #5A3B2B;
 
   border-radius: 8px;
 
@@ -3966,7 +3966,7 @@ button:focus-visible {
 
 .modal-cancel-btn:hover {
 
-  background: #26364d;
+  background: #3A261D;
 
   color: #ffffff;
 
@@ -3992,7 +3992,7 @@ button:focus-visible {
 
   flex-shrink: 0;
 
-  color: #35c8bd;
+  color: #D99565;
 
   background: #173b42;
 
@@ -4122,7 +4122,7 @@ button:focus-visible {
 
   height: 7px;
 
-  background: #17b8ae;
+  background: #C87543;
 
   border-radius: 50%;
 
@@ -4234,7 +4234,7 @@ button:focus-visible {
 
 .details-back-btn:hover {
 
-  color: #35c8bd;
+  color: #D99565;
 
 }
 
@@ -4402,9 +4402,9 @@ button:focus-visible {
 
   padding: 19px 0;
 
-  border-top: 1px solid #2a3a52;
+  border-top: 1px solid #38251D;
 
-  border-bottom: 1px solid #2a3a52;
+  border-bottom: 1px solid #38251D;
 
 }
 
@@ -4480,9 +4480,9 @@ button:focus-visible {
 
   color: #e8edf5;
 
-  background: #111d30;
+  background: #1B110D;
 
-  border: 1px solid #35465e;
+  border: 1px solid #4A3024;
 
   border-radius: 8px;
 
@@ -4494,7 +4494,7 @@ button:focus-visible {
 
 .details-status-control select:focus {
 
-  border-color: #17b8ae;
+  border-color: #C87543;
 
 }
 
@@ -4588,7 +4588,7 @@ button:focus-visible {
 
   border-radius: 9px;
 
-  color: #35c8bd;
+  color: #D99565;
 
   min-width: 0;
 
@@ -4676,7 +4676,7 @@ button:focus-visible {
 
   padding: 12px;
 
-  color: #4adbd0;
+  color: #D99565;
 
   background: #173b42;
 
@@ -4734,7 +4734,7 @@ button:focus-visible {
 
   border: none;
 
-  border-bottom: 1px solid #2a3a52;
+  border-bottom: 1px solid #38251D;
 
   cursor: pointer;
 
@@ -4744,7 +4744,7 @@ button:focus-visible {
 
 .clickable-investigation-record:hover {
 
-  background: #202f45;
+  background: #332119;
 
 }
 
@@ -4853,8 +4853,8 @@ button:focus-visible {
 
 .finding-primary-btn {
   color: white;
-  background: #17a99f;
-  border: 1px solid #17a99f;
+  background: #BE7043;
+  border: 1px solid #BE7043;
 }
 
 .finding-primary-btn:hover {
@@ -4863,7 +4863,7 @@ button:focus-visible {
 }
 
 .finding-outline-btn {
-  color: #55d5cc;
+  color: #E0A06E;
   background: #173b42;
   border: 1px solid #28706e;
 }
@@ -4901,8 +4901,8 @@ button:focus-visible {
 }
 
 .finding-stat-icon.teal {
-  color: #55d5cc;
-  background: #17b8ae22;
+  color: #E0A06E;
+  background: #C8754322;
 }
 
 .finding-stat-icon.coral {
@@ -4916,7 +4916,7 @@ button:focus-visible {
 }
 
 .finding-stat-icon.purple {
-  color: #b3a5ff;
+  color: #D2AD8C;
   background: #9684f222;
 }
 
@@ -4953,8 +4953,8 @@ button:focus-visible {
   gap: 9px;
   padding: 0 12px;
   color: #91a1b6;
-  background: #1b2940;
-  border: 1px solid #304159;
+  background: #291A14;
+  border: 1px solid #4A3024;
   border-radius: 8px;
 }
 
@@ -4998,13 +4998,13 @@ button:focus-visible {
 
 .finding-filter option {
   color: #e8edf5;
-  background: #1b2940;
+  background: #291A14;
 }
 
 .findings-table-panel {
   overflow: hidden;
-  background: #1b2940;
-  border: 1px solid #304159;
+  background: #291A14;
+  border: 1px solid #4A3024;
   border-radius: 12px;
 }
 
@@ -5014,7 +5014,7 @@ button:focus-visible {
   justify-content: space-between;
   gap: 15px;
   padding: 21px 23px;
-  border-bottom: 1px solid #304159;
+  border-bottom: 1px solid #4A3024;
 }
 
 .findings-table-heading h3 {
@@ -5048,7 +5048,7 @@ button:focus-visible {
 .findings-table th {
   padding: 14px;
   color: #aab8cc;
-  background: #202f45;
+  background: #332119;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.7px;
@@ -5058,7 +5058,7 @@ button:focus-visible {
 .findings-table td {
   padding: 15px 14px;
   color: #c2cddc;
-  border-bottom: 1px solid #304159;
+  border-bottom: 1px solid #4A3024;
   font-size: 12px;
   white-space: nowrap;
 }
@@ -5068,7 +5068,7 @@ button:focus-visible {
 }
 
 .findings-table tbody tr:hover {
-  background: #22334c;
+  background: #38241B;
 }
 
 .finding-name-cell {
@@ -5159,15 +5159,15 @@ button:focus-visible {
   display: grid;
   place-items: center;
   color: #aab8cc;
-  background: #293a53;
+  background: #422C20;
   border: 0;
   border-radius: 7px;
   cursor: pointer;
 }
 
 .finding-row-actions button:hover {
-  color: #6ae0d6;
-  background: #24514f;
+  color: #E8AD7B;
+  background: #563323;
 }
 
 .finding-row-actions button:last-child:hover {
@@ -5191,7 +5191,7 @@ button:focus-visible {
   height: 68px;
   display: grid;
   place-items: center;
-  color: #35c8bd;
+  color: #D99565;
   background: #173b42;
   border: 1px solid #28545b;
   border-radius: 17px;
@@ -5227,7 +5227,7 @@ button:focus-visible {
 }
 
 .finding-back-btn:hover {
-  color: #55d5cc;
+  color: #E0A06E;
 }
 
 .finding-detail-actions {
@@ -5244,8 +5244,8 @@ button:focus-visible {
 
 .finding-detail-panel {
   overflow: hidden;
-  background: #1b2940;
-  border: 1px solid #304159;
+  background: #291A14;
+  border: 1px solid #4A3024;
   border-radius: 12px;
 }
 
@@ -5254,8 +5254,8 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   padding: 19px 21px;
-  color: #55d5cc;
-  border-bottom: 1px solid #304159;
+  color: #E0A06E;
+  border-bottom: 1px solid #4A3024;
 }
 
 .finding-panel-heading h3 {
@@ -5296,14 +5296,14 @@ button:focus-visible {
   width: 100%;
   padding: 10px;
   color: #e8edf5;
-  background: #111d30;
-  border: 1px solid #35465e;
+  background: #1B110D;
+  border: 1px solid #4A3024;
   border-radius: 8px;
   outline: 0;
 }
 
 .finding-select option {
-  background: #111d30;
+  background: #1B110D;
   color: #e8edf5;
 }
 
@@ -5327,8 +5327,8 @@ button:focus-visible {
   max-height: 90vh;
   overflow-y: auto;
   padding: 25px;
-  background: #1b2940;
-  border: 1px solid #34465f;
+  background: #291A14;
+  border: 1px solid #4A3024;
   border-radius: 14px;
   box-shadow: 0 20px 70px #00000066;
 }
@@ -5360,8 +5360,8 @@ button:focus-visible {
   place-items: center;
   flex-shrink: 0;
   color: #aab8ca;
-  background: #26364d;
-  border: 1px solid #3a4b63;
+  background: #3A261D;
+  border: 1px solid #503527;
   border-radius: 8px;
   cursor: pointer;
 }
@@ -5386,8 +5386,8 @@ button:focus-visible {
   width: 100%;
   padding: 11px 12px;
   color: #e8edf5;
-  background: #111d30;
-  border: 1px solid #35465e;
+  background: #1B110D;
+  border: 1px solid #4A3024;
   border-radius: 8px;
   outline: 0;
   font-family: inherit;
@@ -5397,7 +5397,7 @@ button:focus-visible {
 .finding-form-group input:focus,
 .finding-form-group select:focus,
 .finding-form-group textarea:focus {
-  border-color: #17b8ae;
+  border-color: #C87543;
 }
 
 .finding-form-group input::placeholder,
@@ -5407,7 +5407,7 @@ button:focus-visible {
 
 .finding-form-group select option {
   color: #e8edf5;
-  background: #111d30;
+  background: #1B110D;
 }
 
 .finding-form-group textarea {
@@ -5435,14 +5435,14 @@ button:focus-visible {
   justify-content: flex-end;
   gap: 10px;
   padding-top: 15px;
-  border-top: 1px solid #34465f;
+  border-top: 1px solid #4A3024;
 }
 
 .finding-cancel-btn {
   padding: 0 17px;
   color: #b5c2d3;
   background: transparent;
-  border: 1px solid #40516a;
+  border: 1px solid #5A3B2B;
   border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
@@ -5561,8 +5561,8 @@ button:focus-visible {
 .dossier-stat-icon { width:47px; height:47px; flex-shrink:0; display:grid; place-items:center; border-radius:11px; }
 .dossier-stat-icon.teal { color:#42d5cc; background:#17B8AE24; }
 .dossier-stat-icon.amber { color:#f1b45e; background:#F1B45E24; }
-.dossier-stat-icon.purple { color:#a99af5; background:#9684F224; }
-.dossier-stat-icon.green { color:#64d7a0; background:#64D7A024; }
+.dossier-stat-icon.purple { color:#C49A78; background:#9684F224; }
+.dossier-stat-icon.green { color:#DCA16F; background:#64D7A024; }
 .dossier-stat-card span { display:block; margin-bottom:7px; color:var(--text-secondary); font-size:13px; }
 .dossier-stat-card strong { color:var(--text-main); font-size:25px; font-weight:750; }
 
@@ -5592,13 +5592,13 @@ button:focus-visible {
 .dossiers-table td:first-child strong { max-width:240px; overflow:hidden; color:var(--text-main); font-size:13px; text-overflow:ellipsis; }
 .dossiers-table td:first-child small { margin-top:7px; color:var(--text-muted); font-size:11px; }
 .dossier-priority, .dossier-status { display:inline-flex; align-items:center; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; }
-.dossier-priority.low { color:#64d7a0; background:#64D7A01F; }
+.dossier-priority.low { color:#DCA16F; background:#64D7A01F; }
 .dossier-priority.medium { color:#f1b45e; background:#F1B45E1F; }
 .dossier-priority.high { color:#ff9b6e; background:#FF9B6E21; }
 .dossier-priority.critical { color:#ff7f91; background:#F17D8C24; }
 .dossier-status.draft { color:#f1b45e; background:#F1B45E1F; }
-.dossier-status.review { color:#a99af5; background:#9684F224; }
-.dossier-status.completed { color:#64d7a0; background:#64D7A01F; }
+.dossier-status.review { color:#C49A78; background:#9684F224; }
+.dossier-status.completed { color:#DCA16F; background:#64D7A01F; }
 .dossier-date { display:inline-flex; align-items:center; gap:7px; }
 .dossier-row-actions { display:flex; align-items:center; gap:6px; }
 .dossier-row-actions button { width:33px; height:33px; display:grid; place-items:center; border:0; border-radius:7px; background:var(--bg-card-hover); color:var(--text-secondary); cursor:pointer; transition:.2s ease; }
@@ -5635,8 +5635,8 @@ button:focus-visible {
 .dossier-info-item>strong { color:var(--text-main); font-size:13px; font-weight:600; overflow-wrap:anywhere; }
 .dossier-status-select { width:fit-content; max-width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:6px; outline:none; background:var(--bg-input); font-size:12px; cursor:pointer; }
 .dossier-status-select.draft { color:#f1b45e; }
-.dossier-status-select.review { color:#a99af5; }
-.dossier-status-select.completed { color:#64d7a0; }
+.dossier-status-select.review { color:#C49A78; }
+.dossier-status-select.completed { color:#DCA16F; }
 
 /* Dossier Create / Edit Modal */
 .dossier-modal-overlay { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto; background:#030912C2; backdrop-filter:blur(5px); }
@@ -5760,7 +5760,7 @@ button:focus-visible {
 }
 
 .settings-nav-item.active {
-  border-color: #17B8AE35;
+  border-color: #C8754335;
   background: #17B8AE16;
   color: var(--teal);
 }
@@ -5836,7 +5836,7 @@ button:focus-visible {
   flex-shrink: 0;
   place-items: center;
   border-radius: 50%;
-  background: #17A99F;
+  background: #BE7043;
   color: white;
   font-size: 17px;
   font-weight: 800;
@@ -5992,7 +5992,7 @@ button:focus-visible {
 }
 
 .theme-preview-dark {
-  background: #101827;
+  background: #120C09;
 }
 
 .theme-preview-light {
@@ -6006,7 +6006,7 @@ button:focus-visible {
 }
 
 .theme-preview-dark .theme-preview-sidebar {
-  background: #17243A;
+  background: #21140F;
 }
 
 .theme-preview-light .theme-preview-sidebar {
@@ -6027,7 +6027,7 @@ button:focus-visible {
 }
 
 .theme-preview-dark .theme-preview-content div {
-  background: #293950;
+  background: #3B271E;
 }
 
 .theme-preview-light .theme-preview-content div {
@@ -6065,7 +6065,7 @@ button:focus-visible {
   gap: 12px;
   padding: 14px;
   margin-top: 22px;
-  border: 1px solid #17B8AE35;
+  border: 1px solid #C8754335;
   border-radius: 9px;
   background: #17B8AE0D;
   color: var(--teal);
@@ -6173,7 +6173,7 @@ button:focus-visible {
   place-items: center;
   margin-bottom: 13px;
   border-radius: 17px;
-  background: linear-gradient(145deg, #22C8BC, #128A91);
+  background: linear-gradient(145deg, #D58A58, #A95732);
   color: white;
 }
 
@@ -6234,7 +6234,7 @@ button:focus-visible {
   margin-top: 15px;
   border: 1px solid #315C58;
   border-radius: 8px;
-  background: #193B3C;
+  background: #3A2419;
   color: #79DFB2;
   font-size: 12px;
 }
@@ -6255,7 +6255,7 @@ button:focus-visible {
   --text-main: #243247;
   --text-secondary: #64748B;
   --text-muted: #8794A7;
-  --teal: #138F89;
+  --teal: #A95732;
 }
 
 :root[data-theme="light"] body,
@@ -6559,4 +6559,82 @@ button:focus-visible {
 .audit-event span {
   color: var(--text-secondary, #9caec2);
   font-size: 11px;
+}
+
+
+/* Decipher warm dark theme refinement */
+:root {
+  --bg-main: #120C09;
+  --bg-sidebar: #1B110D;
+  --bg-card: #291A14;
+  --bg-card-hover: #38241B;
+  --bg-input: #332119;
+  --border: #4A3024;
+  --teal: #C87543;
+  --purple: #B88A68;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .app-shell,
+:root[data-theme="dark"] .main-area {
+  background: var(--bg-main);
+}
+
+:root[data-theme="dark"] .topbar {
+  background: #1B110D;
+  border-bottom-color: #4A3024;
+}
+
+:root[data-theme="dark"] .sidebar {
+  background: #1B110D;
+  border-right-color: #3B271E;
+}
+
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .upload-panel,
+:root[data-theme="dark"] .selected-files-panel,
+:root[data-theme="dark"] .investigation-list-panel,
+:root[data-theme="dark"] .settings-panel,
+:root[data-theme="dark"] .dossier-card,
+:root[data-theme="dark"] .finding-card {
+  background: #291A14;
+  border-color: #4A3024;
+}
+
+:root[data-theme="dark"] .nav-active,
+:root[data-theme="dark"] .button-primary,
+:root[data-theme="dark"] .investigation-primary-btn,
+:root[data-theme="dark"] .findings-primary-btn,
+:root[data-theme="dark"] .dossier-primary-btn {
+  background: linear-gradient(110deg, #C87543, #A95732);
+  border-color: #C87543;
+  color: #FFF8F2;
+}
+
+:root[data-theme="dark"] .nav-active {
+  box-shadow: 0 5px 18px #C8754328;
+}
+
+:root[data-theme="dark"] .brand-icon {
+  background: linear-gradient(145deg, #D58A58, #A95732);
+  box-shadow: 0 5px 20px #C8754330;
+}
+
+:root[data-theme="dark"] button:focus-visible,
+:root[data-theme="dark"] input:focus-visible,
+:root[data-theme="dark"] textarea:focus-visible,
+:root[data-theme="dark"] select:focus-visible {
+  outline-color: #E0A06E;
+}
+
+@media (max-width: 760px) {
+  .page-content {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
 }
