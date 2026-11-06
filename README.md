@@ -65,6 +65,8 @@ Decipher/
 │   │       ├── normalization.py
 │   │       ├── llm_service.py
 │   │       └── report_generator.py
+|   |       └── contextual_schemas.py
+|   |       └── run_demo.py
 │   └── tests/
 │       ├── test_visual_forensics.py
 │       ├── test_correlation.py
@@ -73,6 +75,7 @@ Decipher/
 │   ├── genuine/
 │   ├── manipulated/
 │   └── manifest.json
+|   └── readme.md 
 └── scripts/
     ├── start-backend.ps1
     └── start-frontend.ps1
