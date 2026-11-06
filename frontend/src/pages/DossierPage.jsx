@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   FileText,
   Plus,
@@ -18,6 +18,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import StatusPill from '../components/StatusPill'
+import api from '../services/api'
 
 const initialForm = {
   title: '',
@@ -46,6 +47,45 @@ export default function DossierPage() {
   const [editingId, setEditingId] = useState(null)
   const [selectedDossier, setSelectedDossier] = useState(null)
   const [form, setForm] = useState(initialForm)
+  const [investigations, setInvestigations] = useState([])
+  const [selectedInvestigationId, setSelectedInvestigationId] = useState('')
+  const [reports, setReports] = useState([])
+  const [apiError, setApiError] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  useEffect(() => {
+    api.getInvestigations()
+      .then((records) => {
+        setInvestigations(records)
+        if (records.length) setSelectedInvestigationId(String(records[0].id))
+      })
+      .catch((error) => setApiError(error.message))
+  }, [])
+
+  useEffect(() => {
+    if (!selectedInvestigationId) {
+      setReports([])
+      return
+    }
+
+    api.getReports(selectedInvestigationId)
+      .then(setReports)
+      .catch((error) => setApiError(error.message))
+  }, [selectedInvestigationId])
+
+  const generateInvestigationReport = async () => {
+    if (!selectedInvestigationId || isGenerating) return
+    setApiError('')
+    setIsGenerating(true)
+    try {
+      await api.generateReport(selectedInvestigationId)
+      setReports(await api.getReports(selectedInvestigationId))
+    } catch (error) {
+      setApiError(error.message)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   const stats = useMemo(() => ({
     total: dossiers.length,
@@ -379,6 +419,65 @@ export default function DossierPage() {
           Create Dossier
         </button>
       </div>
+
+      <section className="dossier-panel">
+        <div className="dossier-panel-heading">
+          <ClipboardList size={19} />
+          <h2>Investigation Dossiers</h2>
+        </div>
+        <div className="dossiers-toolbar">
+          <div className="dossiers-filter">
+            <select
+              aria-label="Select investigation for dossier"
+              value={selectedInvestigationId}
+              onChange={(event) => setSelectedInvestigationId(event.target.value)}
+            >
+              <option value="">Select an investigation</option>
+              {investigations.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title} (#{item.id})
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            className="dossier-primary-btn"
+            onClick={generateInvestigationReport}
+            disabled={!selectedInvestigationId || isGenerating}
+          >
+            <FileText size={17} />
+            {isGenerating ? 'Generating…' : 'Generate Report'}
+          </button>
+        </div>
+        {apiError && <p role="alert">{apiError}</p>}
+        {reports.length ? (
+          <div className="associated-document-list">
+            {reports.map((report) => (
+              <div className="associated-document" key={report.id}>
+                <FileText size={20} />
+                <div className="associated-document-info">
+                  <strong>Investigation #{report.investigation_id} report</strong>
+                  <span>{formatDate(report.created_at)}</span>
+                </div>
+                <a
+                  className="dossier-secondary-btn"
+                  href={api.getReportDownloadUrl(report.id)}
+                  download
+                >
+                  <FileCheck2 size={16} />
+                  Download JSON dossier
+                </a>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>
+            {selectedInvestigationId
+              ? 'No generated reports for this investigation yet.'
+              : 'Create or select an investigation to generate its dossier.'}
+          </p>
+        )}
+      </section>
 
       <div className="dossiers-stats">
         <div className="dossier-stat-card">

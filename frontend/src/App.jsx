@@ -1,5 +1,6 @@
 import FindingsPage from './pages/FindingsPage'
 import { useEffect, useState } from 'react'
+import api from './services/api'
 import DossierPage from './pages/DossierPage'
 import UploadPage from './pages/UploadPage'
 import InvestigationPage from './pages/InvestigationPage'
@@ -39,47 +40,6 @@ const navigation = [
   { name: 'Findings', icon: FileSearch },
   { name: 'Dossiers & Reports', icon: FileText },
 ]
-
-// ==========================================
-// EMPTY DASHBOARD STATISTICS
-// ==========================================
-
-const statistics = [
-  {
-    title: 'Total Investigations',
-    value: 0,
-    description: 'No investigations created yet',
-    icon: FolderSearch,
-    color: 'teal',
-  },
-  {
-    title: 'Documents Analyzed',
-    value: 0,
-    description: 'No documents uploaded yet',
-    icon: Files,
-    color: 'purple',
-  },
-  {
-    title: 'Suspicious Findings',
-    value: 0,
-    description: 'No findings available',
-    icon: AlertTriangle,
-    color: 'amber',
-  },
-  {
-    title: 'Completed Reviews',
-    value: 0,
-    description: 'No reviews completed yet',
-    icon: ClipboardCheck,
-    color: 'coral',
-  },
-]
-
-// Empty data collections.
-// Real data can be connected later.
-
-const investigations = []
-const activities = []
 
 // ==========================================
 // STATUS BADGE
@@ -229,8 +189,154 @@ function EmptyState({
 // ==========================================
 
 function Dashboard({ onNavigate }) {
+  const [investigations, setInvestigations] = useState([])
+  const [activities, setActivities] = useState([])
+  const [loadError, setLoadError] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [showAllActivities, setShowAllActivities] = useState(false)
+
+  useEffect(() => {
+    let active = true
+
+    async function loadDashboard() {
+      try {
+        const records = await api.getInvestigations()
+        const details = await Promise.all(
+          records.map((record) => api.getInvestigation(record.id))
+        )
+        const history = await Promise.all(
+          details.map(async (investigation) => {
+            const [runs, reports] = await Promise.all([
+              api.getAnalysisRuns(investigation.id),
+              api.getReports(investigation.id),
+            ])
+            return { investigation, runs, reports }
+          })
+        )
+
+        const recentInvestigations = details.map((investigation) => ({
+          id: investigation.id,
+          name: investigation.title,
+          type: 'Document Analysis',
+          documents: investigation.documents.length,
+          findingCount: investigation.findings.length,
+          date: investigation.created_at
+            ? new Date(investigation.created_at).toLocaleDateString()
+            : 'Date unavailable',
+          status: investigation.status === 'analyzed'
+            ? 'Completed'
+            : 'In Progress',
+          color: investigation.status === 'analyzed' ? 'green' : 'amber',
+        }))
+
+        const timeline = []
+        for (const { investigation, runs, reports } of history) {
+          if (investigation.created_at) {
+            timeline.push({
+              id: `investigation-${investigation.id}`,
+              icon: FolderSearch,
+              color: 'teal',
+              title: 'Investigation created',
+              detail: investigation.title,
+              timestamp: investigation.created_at,
+            })
+          }
+          for (const document of investigation.documents) {
+            if (document.uploaded_at) {
+              timeline.push({
+                id: `document-${document.id}`,
+                icon: Files,
+                color: 'purple',
+                title: 'Document processed',
+                detail: `${document.filename} · ${investigation.title}`,
+                timestamp: document.uploaded_at,
+              })
+            }
+          }
+          for (const run of runs) {
+            timeline.push({
+              id: `analysis-${run.id}`,
+              icon: Activity,
+              color: 'amber',
+              title: 'Analysis completed',
+              detail: `${run.findings_count} findings · ${investigation.title}`,
+              timestamp: run.created_at,
+            })
+          }
+          for (const report of reports) {
+            timeline.push({
+              id: `report-${report.id}`,
+              icon: FileText,
+              color: 'coral',
+              title: 'Dossier generated',
+              detail: investigation.title,
+              timestamp: report.created_at,
+            })
+          }
+        }
+
+        timeline.sort(
+          (left, right) =>
+            new Date(right.timestamp).getTime() -
+            new Date(left.timestamp).getTime()
+        )
+
+        if (active) {
+          setInvestigations(recentInvestigations)
+          setActivities(timeline)
+          setLoadError('')
+        }
+      } catch (error) {
+        if (active) setLoadError(error.message)
+      } finally {
+        if (active) setIsLoading(false)
+      }
+    }
+
+    loadDashboard()
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const statistics = [
+    {
+      title: 'Total Investigations',
+      value: investigations.length,
+      description: 'Saved investigations',
+      icon: FolderSearch,
+      color: 'teal',
+    },
+    {
+      title: 'Documents Analyzed',
+      value: investigations.reduce((total, item) => total + item.documents, 0),
+      description: 'Documents in investigations',
+      icon: Files,
+      color: 'purple',
+    },
+    {
+      title: 'Suspicious Findings',
+      value: investigations.reduce(
+        (total, item) => total + (item.findingCount || 0),
+        0
+      ),
+      description: 'Current saved indicators',
+      icon: AlertTriangle,
+      color: 'amber',
+    },
+    {
+      title: 'Completed Reviews',
+      value: investigations.filter((item) => item.status === 'Completed').length,
+      description: 'Investigations analyzed',
+      icon: ClipboardCheck,
+      color: 'coral',
+    },
+  ]
+
   return (
     <>
+      {loadError && <section className="upload-errors" role="alert">{loadError}</section>}
+
       {/* Welcome Section */}
 
       <div className="welcome-section">
@@ -259,7 +365,7 @@ function Dashboard({ onNavigate }) {
 
           <button
             className="button-primary"
-            onClick={() => onNavigate('New Investigation')}
+            onClick={() => onNavigate('Investigations')}
           >
             <Plus size={19} />
             New Investigation
@@ -371,11 +477,7 @@ function Dashboard({ onNavigate }) {
                       <td>
                         <button
                           className="table-action"
-                          onClick={() =>
-                            onNavigate(
-                              `Investigation: ${item.name}`
-                            )
-                          }
+                          onClick={() => onNavigate('Investigations')}
                         >
                           <ArrowUpRight size={18} />
                         </button>
@@ -390,9 +492,7 @@ function Dashboard({ onNavigate }) {
                         title="No investigations yet"
                         description="Create your first investigation to get started."
                         actionLabel="Create Investigation"
-                        onAction={() =>
-                          onNavigate('New Investigation')
-                        }
+                        onAction={() => onNavigate('Investigations')}
                       />
                     </td>
                   </tr>
@@ -419,13 +519,13 @@ function Dashboard({ onNavigate }) {
 
           <div className="activity-list">
             {activities.length > 0 ? (
-              activities.map((activity, index) => {
+              (showAllActivities ? activities : activities.slice(0, 6)).map((activity) => {
                 const Icon = activity.icon
 
                 return (
                   <div
                     className="activity-item"
-                    key={index}
+                    key={activity.id}
                   >
                     <div
                       className={`activity-icon icon-${activity.color}`}
@@ -439,7 +539,7 @@ function Dashboard({ onNavigate }) {
 
                       <small>
                         <Clock3 size={13} />
-                        {activity.time}
+                        {new Date(activity.timestamp).toLocaleString('en-IN')}
                       </small>
                     </div>
                   </div>
@@ -452,8 +552,9 @@ function Dashboard({ onNavigate }) {
                 <strong>No recent activity</strong>
 
                 <span>
-                  Your workspace activity will appear here
-                  when you start an investigation.
+                  {isLoading
+                    ? 'Loading saved activity…'
+                    : 'Your saved investigation activity will appear here.'}
                 </span>
               </div>
             )}
@@ -461,9 +562,9 @@ function Dashboard({ onNavigate }) {
 
           <button
             className="activity-footer"
-            onClick={() => onNavigate('Recent Activity')}
+            onClick={() => setShowAllActivities((shown) => !shown)}
           >
-            View activity history
+            {showAllActivities ? 'Show recent activity' : 'View activity history'}
             <ChevronRight size={17} />
           </button>
         </section>
