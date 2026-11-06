@@ -71,11 +71,14 @@ Decipher/
 │       ├── test_visual_forensics.py
 │       ├── test_correlation.py
 │       └── test_api.py
+|       └── test_normalization.py
+|       └── test_llm_services.py
+|       └── test_contextual_schemas.py
 ├── sample_documents/
 │   ├── genuine/
 │   ├── manipulated/
 │   └── manifest.json
-|   └── readme.md 
+|   └── README.md 
 └── scripts/
     ├── start-backend.ps1
     └── start-frontend.ps1

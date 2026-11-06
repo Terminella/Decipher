@@ -17,3 +17,5 @@ storage/
 
 # Environment secrets
 .env
+__pycache__/
+*.py[cod]
