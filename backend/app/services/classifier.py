@@ -19,8 +19,30 @@ DOCUMENT_TYPES = {
         "account statement",
         "opening balance",
         "closing balance",
-        "transaction date",
-        "withdrawal"
+        "withdrawal",
+        "deposit"
+    ],
+
+    "invoice": [
+        "invoice",
+        "invoice number",
+        "total amount",
+        "payment terms"
+    ],
+
+    "purchase_order": [
+        "purchase order",
+        "approved total",
+        "order date",
+        "delivery terms"
+    ],
+
+    "payment_confirmation": [
+        "payment confirmation",
+        "transaction id",
+        "amount transferred",
+        "payer",
+        "payee"
     ],
 
     "salary_slip": [
@@ -55,7 +77,23 @@ def classify_document(text):
 
     scores = {}
 
-    for document_type, keywords in DOCUMENT_TYPES.items():
+    priority = [
+        "invoice",
+        "purchase_order",
+        "payment_confirmation",
+        *(
+            document_type
+            for document_type in DOCUMENT_TYPES
+            if document_type not in {
+                "invoice",
+                "purchase_order",
+                "payment_confirmation",
+            }
+        ),
+    ]
+
+    for document_type in priority:
+        keywords = DOCUMENT_TYPES[document_type]
 
         matched = [
             keyword

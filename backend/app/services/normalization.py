@@ -60,7 +60,35 @@ FIELD_PATTERNS = {
 
     "email": [
         r"\be-?mail\b"
-    ]
+    ],
+
+    "supplier": [
+        r"\b(?:supplier|vendor|payee)\b"
+    ],
+
+    "invoice_number": [
+        r"\binvoice\s*(?:number|no\.?)\b"
+    ],
+
+    "purchase_order": [
+        r"\bpurchase\s*order\b"
+    ],
+
+    "document_date": [
+        r"\b(?:invoice|order|transaction)\s*date\b"
+    ],
+
+    "amount": [
+        r"\b(?:total\s*amount|approved\s*total|amount\s*(?:transferred|paid)?)\b"
+    ],
+
+    "transaction_id": [
+        r"\btransaction\s*(?:id|number|no\.?)\b"
+    ],
+
+    "reference": [
+        r"\breference\b"
+    ],
 }
 
 
@@ -103,56 +131,208 @@ def extract_fields(text, pages=None):
 
     lines = clean_text(text).splitlines()
 
-    all_blocks = []
+    all_blocks = [
+        block
+        for page in pages or []
+        for block in page.get("blocks", [])
+    ]
 
-    for page in pages or []:
-        all_blocks.extend(page.get("blocks", []))
+    def is_field_label(value):
+        return any(
+            re.fullmatch(rf"\s*(?:{pattern})\s*", value, re.IGNORECASE)
+            for patterns in FIELD_PATTERNS.values()
+            for pattern in patterns
+        )
+
+    def value_locations(value):
+        target_tokens = [
+            re.sub(r"[\W_]+", "", token.casefold())
+            for token in re.findall(
+                r"[\w]+(?:[.,/-][\w]+)*",
+                value,
+                re.UNICODE,
+            )
+        ]
+        target_tokens = [token for token in target_tokens if token]
+        matches = []
+
+        grouped_blocks = {}
+        for block in all_blocks:
+            bbox = block.get("bbox")
+            if not isinstance(bbox, dict):
+                continue
+            if {"x", "y", "width", "height"}.issubset(bbox):
+                x0, y0, width, height = (
+                    bbox["x"],
+                    bbox["y"],
+                    bbox["width"],
+                    bbox["height"],
+                )
+            elif {"x0", "y0", "x1", "y1"}.issubset(bbox):
+                x0, y0 = bbox["x0"], bbox["y0"]
+                width, height = bbox["x1"] - x0, bbox["y1"] - y0
+            else:
+                continue
+            grouped_blocks.setdefault(
+                block.get("page_number", 1),
+                [],
+            ).append((y0 + height / 2, x0, block))
+
+        for page_blocks in grouped_blocks.values():
+            lines_by_y = []
+            for center_y, _, block in sorted(page_blocks):
+                if not lines_by_y or abs(center_y - lines_by_y[-1][0]) > 4:
+                    lines_by_y.append([center_y, [block]])
+                else:
+                    lines_by_y[-1][1].append(block)
+
+            for _, line_blocks in lines_by_y:
+                line_blocks.sort(
+                    key=lambda block: (
+                        block.get("bbox", {}).get("x", block.get("bbox", {}).get("x0", 0))
+                    )
+                )
+                line_token_blocks = []
+                for block in line_blocks:
+                    line_token_blocks.extend(
+                        (
+                            re.sub(r"[\W_]+", "", token.casefold()),
+                            block,
+                        )
+                        for token in re.findall(
+                            r"[\w]+(?:[.,/-][\w]+)*",
+                            str(block.get("text", "")),
+                            re.UNICODE,
+                        )
+                    )
+                line_token_blocks = [
+                    pair for pair in line_token_blocks if pair[0]
+                ]
+                line_tokens = [pair[0] for pair in line_token_blocks]
+                for start in range(len(line_tokens) - len(target_tokens) + 1):
+                    if line_tokens[start:start + len(target_tokens)] == target_tokens:
+                        matches.extend(
+                            block
+                            for _, block in line_token_blocks[
+                                start:start + len(target_tokens)
+                            ]
+                        )
+
+        if not matches:
+            target_set = set(target_tokens)
+            for block in all_blocks:
+                block_tokens = {
+                    re.sub(r"[\W_]+", "", token.casefold())
+                    for token in re.findall(
+                        r"[\w]+(?:[.,/-][\w]+)*",
+                        str(block.get("text", "")),
+                        re.UNICODE,
+                    )
+                }
+                if target_set.intersection(block_tokens):
+                    matches.append(block)
+
+        by_page = {}
+        confidences = []
+
+        for block in matches:
+            bbox = block.get("bbox")
+            if not isinstance(bbox, dict):
+                continue
+
+            page_number = block.get("page_number", 1)
+            if {"x", "y", "width", "height"}.issubset(bbox):
+                x0 = bbox["x"]
+                y0 = bbox["y"]
+                x1 = x0 + bbox["width"]
+                y1 = y0 + bbox["height"]
+            elif {"x0", "y0", "x1", "y1"}.issubset(bbox):
+                x0, y0, x1, y1 = (
+                    bbox["x0"],
+                    bbox["y0"],
+                    bbox["x1"],
+                    bbox["y1"],
+                )
+            else:
+                continue
+
+            bounds = by_page.setdefault(
+                page_number,
+                [x0, y0, x1, y1],
+            )
+            bounds[0] = min(bounds[0], x0)
+            bounds[1] = min(bounds[1], y0)
+            bounds[2] = max(bounds[2], x1)
+            bounds[3] = max(bounds[3], y1)
+
+            confidence = block.get("confidence")
+            if confidence is not None:
+                confidences.append(float(confidence))
+
+        locations = [
+            {
+                "page_number": page_number,
+                "bbox": {
+                    "x": bounds[0],
+                    "y": bounds[1],
+                    "width": bounds[2] - bounds[0],
+                    "height": bounds[3] - bounds[1],
+                },
+            }
+            for page_number, bounds in sorted(by_page.items())
+        ]
+
+        return locations, (
+            sum(confidences) / len(confidences)
+            if confidences else None
+        )
 
     for field_name, patterns in FIELD_PATTERNS.items():
 
-        for line in lines:
+        for line_index, line in enumerate(lines):
 
             for pattern in patterns:
+                if (
+                    field_name == "purchase_order"
+                    and line_index == 0
+                    and line.strip().casefold() == "purchase order"
+                ):
+                    continue
 
-                match = re.search(
+                same_line_match = re.search(
                     rf"{pattern}\s*[:\-]\s*(.+)$",
                     line,
-                    re.IGNORECASE
+                    re.IGNORECASE,
                 )
-
-                if match:
-
-                    value = normalize_value(
-                        field_name,
-                        match.group(1)
+                if same_line_match:
+                    raw_value = same_line_match.group(1)
+                elif re.fullmatch(
+                    rf"\s*(?:{pattern})\s*",
+                    line,
+                    re.IGNORECASE,
+                ):
+                    next_line = (
+                        lines[line_index + 1].strip()
+                        if line_index + 1 < len(lines)
+                        else ""
                     )
+                    if not next_line or is_field_label(next_line):
+                        continue
+                    raw_value = next_line
+                else:
+                    continue
 
-                    if value:
+                value = normalize_value(field_name, raw_value)
+                if not value:
+                    continue
 
-                        fields[field_name] = value
-
-                        matching_blocks = [
-                            block
-                            for block in all_blocks
-                            if value.lower() in
-                            block.get("text", "").lower()
-                        ]
-
-                        field_metadata[field_name] = {
-                            "confidence": (
-                                matching_blocks[0].get("confidence")
-                                if matching_blocks else None
-                            ),
-                            "locations": [
-                                {
-                                    "page_number": b["page_number"],
-                                    "bbox": b["bbox"]
-                                }
-                                for b in matching_blocks
-                            ]
-                        }
-
-                        break
+                fields[field_name] = value
+                locations, confidence = value_locations(value)
+                field_metadata[field_name] = {
+                    "confidence": confidence,
+                    "locations": locations,
+                }
+                break
 
             if field_name in fields:
                 break
