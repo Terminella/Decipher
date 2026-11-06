@@ -1,0 +1,595 @@
+{
+  "dataset_name": "Decipher Synthetic Document Forensics Dataset",
+  "version": "1.0",
+  "notice": "All organizations, identifiers, transactions and documents are fictional and generated for software testing. These are not real financial or legal records.",
+  "document_count": 30,
+  "cases": [
+    {
+      "investigation_id": "CASE-001",
+      "description": "Synthetic procurement/payment case 1",
+      "linked_documents": {
+        "genuine": [
+          "CASE-001_invoice_genuine.pdf",
+          "CASE-001_purchase_order_genuine.pdf",
+          "CASE-001_bank_statement_genuine.pdf"
+        ],
+        "manipulated": [
+          "CASE-001_invoice_manipulated.pdf",
+          "CASE-001_purchase_order_manipulated.pdf",
+          "CASE-001_bank_statement_manipulated.pdf"
+        ]
+      },
+      "expected_cross_document_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 48,500.00",
+          "observed_value": "INR 61,000.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        },
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Aster Components Pvt Ltd",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        },
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-08-04",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "investigation_id": "CASE-002",
+      "description": "Synthetic procurement/payment case 2",
+      "linked_documents": {
+        "genuine": [
+          "CASE-002_invoice_genuine.pdf",
+          "CASE-002_purchase_order_genuine.pdf",
+          "CASE-002_bank_statement_genuine.pdf"
+        ],
+        "manipulated": [
+          "CASE-002_invoice_manipulated.pdf",
+          "CASE-002_purchase_order_manipulated.pdf",
+          "CASE-002_bank_statement_manipulated.pdf"
+        ]
+      },
+      "expected_cross_document_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 127,500.00",
+          "observed_value": "INR 140,000.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        },
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "BluePeak Industrial Supplies",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        },
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-08-12",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "investigation_id": "CASE-003",
+      "description": "Synthetic procurement/payment case 3",
+      "linked_documents": {
+        "genuine": [
+          "CASE-003_invoice_genuine.pdf",
+          "CASE-003_purchase_order_genuine.pdf",
+          "CASE-003_bank_statement_genuine.pdf"
+        ],
+        "manipulated": [
+          "CASE-003_invoice_manipulated.pdf",
+          "CASE-003_purchase_order_manipulated.pdf",
+          "CASE-003_bank_statement_manipulated.pdf"
+        ]
+      },
+      "expected_cross_document_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 76,320.00",
+          "observed_value": "INR 88,820.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        },
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Cedar Manufacturing Co",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        },
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-09-03",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "investigation_id": "CASE-004",
+      "description": "Synthetic procurement/payment case 4",
+      "linked_documents": {
+        "genuine": [
+          "CASE-004_invoice_genuine.pdf",
+          "CASE-004_purchase_order_genuine.pdf",
+          "CASE-004_bank_statement_genuine.pdf"
+        ],
+        "manipulated": [
+          "CASE-004_invoice_manipulated.pdf",
+          "CASE-004_purchase_order_manipulated.pdf",
+          "CASE-004_bank_statement_manipulated.pdf"
+        ]
+      },
+      "expected_cross_document_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 218,000.00",
+          "observed_value": "INR 230,500.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        },
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Delta Office Systems",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        },
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-09-17",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "investigation_id": "CASE-005",
+      "description": "Synthetic procurement/payment case 5",
+      "linked_documents": {
+        "genuine": [
+          "CASE-005_invoice_genuine.pdf",
+          "CASE-005_purchase_order_genuine.pdf",
+          "CASE-005_bank_statement_genuine.pdf"
+        ],
+        "manipulated": [
+          "CASE-005_invoice_manipulated.pdf",
+          "CASE-005_purchase_order_manipulated.pdf",
+          "CASE-005_bank_statement_manipulated.pdf"
+        ]
+      },
+      "expected_cross_document_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 95,400.00",
+          "observed_value": "INR 107,900.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        },
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Evergreen Engineering Works",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        },
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-10-06",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "CASE-001_invoice_genuine",
+      "filename": "CASE-001_invoice_genuine.pdf",
+      "relative_path": "genuine/CASE-001_invoice_genuine.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "invoice",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-001_purchase_order_genuine",
+      "filename": "CASE-001_purchase_order_genuine.pdf",
+      "relative_path": "genuine/CASE-001_purchase_order_genuine.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "purchase_order",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-001_bank_statement_genuine",
+      "filename": "CASE-001_bank_statement_genuine.pdf",
+      "relative_path": "genuine/CASE-001_bank_statement_genuine.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "bank_statement",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-001_invoice_manipulated",
+      "filename": "CASE-001_invoice_manipulated.pdf",
+      "relative_path": "manipulated/CASE-001_invoice_manipulated.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "invoice",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 48,500.00",
+          "observed_value": "INR 61,000.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        }
+      ]
+    },
+    {
+      "id": "CASE-001_purchase_order_manipulated",
+      "filename": "CASE-001_purchase_order_manipulated.pdf",
+      "relative_path": "manipulated/CASE-001_purchase_order_manipulated.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "purchase_order",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Aster Components Pvt Ltd",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        }
+      ]
+    },
+    {
+      "id": "CASE-001_bank_statement_manipulated",
+      "filename": "CASE-001_bank_statement_manipulated.pdf",
+      "relative_path": "manipulated/CASE-001_bank_statement_manipulated.pdf",
+      "investigation_id": "CASE-001",
+      "document_type": "bank_statement",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-08-04",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "id": "CASE-002_invoice_genuine",
+      "filename": "CASE-002_invoice_genuine.pdf",
+      "relative_path": "genuine/CASE-002_invoice_genuine.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "invoice",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-002_purchase_order_genuine",
+      "filename": "CASE-002_purchase_order_genuine.pdf",
+      "relative_path": "genuine/CASE-002_purchase_order_genuine.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "purchase_order",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-002_bank_statement_genuine",
+      "filename": "CASE-002_bank_statement_genuine.pdf",
+      "relative_path": "genuine/CASE-002_bank_statement_genuine.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "bank_statement",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-002_invoice_manipulated",
+      "filename": "CASE-002_invoice_manipulated.pdf",
+      "relative_path": "manipulated/CASE-002_invoice_manipulated.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "invoice",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 127,500.00",
+          "observed_value": "INR 140,000.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        }
+      ]
+    },
+    {
+      "id": "CASE-002_purchase_order_manipulated",
+      "filename": "CASE-002_purchase_order_manipulated.pdf",
+      "relative_path": "manipulated/CASE-002_purchase_order_manipulated.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "purchase_order",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "BluePeak Industrial Supplies",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        }
+      ]
+    },
+    {
+      "id": "CASE-002_bank_statement_manipulated",
+      "filename": "CASE-002_bank_statement_manipulated.pdf",
+      "relative_path": "manipulated/CASE-002_bank_statement_manipulated.pdf",
+      "investigation_id": "CASE-002",
+      "document_type": "bank_statement",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-08-12",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "id": "CASE-003_invoice_genuine",
+      "filename": "CASE-003_invoice_genuine.pdf",
+      "relative_path": "genuine/CASE-003_invoice_genuine.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "invoice",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-003_purchase_order_genuine",
+      "filename": "CASE-003_purchase_order_genuine.pdf",
+      "relative_path": "genuine/CASE-003_purchase_order_genuine.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "purchase_order",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-003_bank_statement_genuine",
+      "filename": "CASE-003_bank_statement_genuine.pdf",
+      "relative_path": "genuine/CASE-003_bank_statement_genuine.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "bank_statement",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-003_invoice_manipulated",
+      "filename": "CASE-003_invoice_manipulated.pdf",
+      "relative_path": "manipulated/CASE-003_invoice_manipulated.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "invoice",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 76,320.00",
+          "observed_value": "INR 88,820.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        }
+      ]
+    },
+    {
+      "id": "CASE-003_purchase_order_manipulated",
+      "filename": "CASE-003_purchase_order_manipulated.pdf",
+      "relative_path": "manipulated/CASE-003_purchase_order_manipulated.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "purchase_order",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Cedar Manufacturing Co",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        }
+      ]
+    },
+    {
+      "id": "CASE-003_bank_statement_manipulated",
+      "filename": "CASE-003_bank_statement_manipulated.pdf",
+      "relative_path": "manipulated/CASE-003_bank_statement_manipulated.pdf",
+      "investigation_id": "CASE-003",
+      "document_type": "bank_statement",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-09-03",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "id": "CASE-004_invoice_genuine",
+      "filename": "CASE-004_invoice_genuine.pdf",
+      "relative_path": "genuine/CASE-004_invoice_genuine.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "invoice",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-004_purchase_order_genuine",
+      "filename": "CASE-004_purchase_order_genuine.pdf",
+      "relative_path": "genuine/CASE-004_purchase_order_genuine.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "purchase_order",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-004_bank_statement_genuine",
+      "filename": "CASE-004_bank_statement_genuine.pdf",
+      "relative_path": "genuine/CASE-004_bank_statement_genuine.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "bank_statement",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-004_invoice_manipulated",
+      "filename": "CASE-004_invoice_manipulated.pdf",
+      "relative_path": "manipulated/CASE-004_invoice_manipulated.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "invoice",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 218,000.00",
+          "observed_value": "INR 230,500.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        }
+      ]
+    },
+    {
+      "id": "CASE-004_purchase_order_manipulated",
+      "filename": "CASE-004_purchase_order_manipulated.pdf",
+      "relative_path": "manipulated/CASE-004_purchase_order_manipulated.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "purchase_order",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Delta Office Systems",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        }
+      ]
+    },
+    {
+      "id": "CASE-004_bank_statement_manipulated",
+      "filename": "CASE-004_bank_statement_manipulated.pdf",
+      "relative_path": "manipulated/CASE-004_bank_statement_manipulated.pdf",
+      "investigation_id": "CASE-004",
+      "document_type": "bank_statement",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-09-17",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    },
+    {
+      "id": "CASE-005_invoice_genuine",
+      "filename": "CASE-005_invoice_genuine.pdf",
+      "relative_path": "genuine/CASE-005_invoice_genuine.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "invoice",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-005_purchase_order_genuine",
+      "filename": "CASE-005_purchase_order_genuine.pdf",
+      "relative_path": "genuine/CASE-005_purchase_order_genuine.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "purchase_order",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-005_bank_statement_genuine",
+      "filename": "CASE-005_bank_statement_genuine.pdf",
+      "relative_path": "genuine/CASE-005_bank_statement_genuine.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "bank_statement",
+      "status": "genuine",
+      "expected_findings": []
+    },
+    {
+      "id": "CASE-005_invoice_manipulated",
+      "filename": "CASE-005_invoice_manipulated.pdf",
+      "relative_path": "manipulated/CASE-005_invoice_manipulated.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "invoice",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "amount_mismatch",
+          "field": "total_amount",
+          "expected_original_value": "INR 95,400.00",
+          "observed_value": "INR 107,900.00",
+          "description": "Invoice contains an intentionally altered total amount."
+        }
+      ]
+    },
+    {
+      "id": "CASE-005_purchase_order_manipulated",
+      "filename": "CASE-005_purchase_order_manipulated.pdf",
+      "relative_path": "manipulated/CASE-005_purchase_order_manipulated.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "purchase_order",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "supplier_mismatch",
+          "field": "supplier",
+          "expected_original_value": "Evergreen Engineering Works",
+          "observed_value": "Redwood Trading House",
+          "description": "Purchase Order contains an intentionally altered supplier."
+        }
+      ]
+    },
+    {
+      "id": "CASE-005_bank_statement_manipulated",
+      "filename": "CASE-005_bank_statement_manipulated.pdf",
+      "relative_path": "manipulated/CASE-005_bank_statement_manipulated.pdf",
+      "investigation_id": "CASE-005",
+      "document_type": "bank_statement",
+      "status": "manipulated",
+      "expected_findings": [
+        {
+          "type": "date_mismatch",
+          "field": "transaction_date",
+          "expected_original_value": "2026-10-06",
+          "observed_value": "2026-10-28",
+          "description": "Bank Statement contains an intentionally altered transaction date."
+        }
+      ]
+    }
+  ]
+}
