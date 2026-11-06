@@ -1,7 +1,8 @@
 import DocumentViewer from '../components/DocumentViewer'
 import DocumentSelector from '../components/DocumentSelector'
 import AuditTrailModal from '../components/AuditTrailModal'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import api from '../services/api'
 import {
   Search, Plus, SlidersHorizontal, FolderSearch, History,
   FileText, Clock3, CircleCheck, CircleAlert,
@@ -10,6 +11,37 @@ import {
 } from 'lucide-react'
 
 const filters = ['All', 'In Progress', 'Completed', 'On Hold']
+
+function mapDocument(document) {
+  return {
+    id: document.id,
+    backendId: document.id,
+    name: document.filename,
+    size: document.size,
+    type: document.doc_type || 'Document',
+    sha256: document.sha256,
+    processingStatus: document.processing_status,
+    extractedFields: document.extracted_fields || [],
+    processingResult: document.processing_result,
+  }
+}
+
+function mapInvestigation(record) {
+  return {
+    id: String(record.id),
+    backendId: record.id,
+    name: record.title,
+    type: 'Document Analysis',
+    description: record.description || '',
+    priority: 'Medium',
+    status: record.status === 'analyzed' ? 'Completed' : 'In Progress',
+    date: record.created_at
+      ? new Date(record.created_at).toLocaleDateString()
+      : '',
+    documents: (record.documents || []).map(mapDocument),
+    findings: record.findings || [],
+  }
+}
 
 function InvestigationPage({ onNavigate }) {
   const [investigations, setInvestigations] = useState([])
@@ -20,6 +52,9 @@ function InvestigationPage({ onNavigate }) {
   const [auditOpen, setAuditOpen] = useState(false)
   const [auditEvents, setAuditEvents] = useState([])
   const [selectedInvestigation, setSelectedInvestigation] = useState(null)
+  const [apiError, setApiError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -27,6 +62,45 @@ function InvestigationPage({ onNavigate }) {
     description: '',
     priority: 'Medium'
   })
+
+  useEffect(() => {
+    let active = true
+
+    async function loadInvestigations() {
+      setIsLoading(true)
+      try {
+        const records = await api.getInvestigations()
+        const details = await Promise.all(
+          records.map((record) => api.getInvestigation(record.id))
+        )
+        if (active) {
+          setInvestigations(details.map(mapInvestigation))
+        }
+      } catch (error) {
+        if (active) setApiError(error.message)
+      } finally {
+        if (active) setIsLoading(false)
+      }
+    }
+
+    loadInvestigations()
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const refreshInvestigation = async (id) => {
+    const record = await api.getInvestigation(id)
+    const updated = mapInvestigation(record)
+    setInvestigations((previous) => [
+      updated,
+      ...previous.filter((item) => item.backendId !== record.id),
+    ])
+    setSelectedInvestigation((current) =>
+      current?.backendId === record.id ? updated : current
+    )
+    return updated
+  }
 
   const recordAuditEvent = (event) => {
     setAuditEvents((previous) => [
@@ -45,100 +119,83 @@ function InvestigationPage({ onNavigate }) {
     setFormData((previous) => ({ ...previous, [name]: value }))
   }
 
-  const handleCreateInvestigation = (event) => {
+  const handleCreateInvestigation = async (event) => {
     event.preventDefault()
+    setApiError('')
 
-    const newInvestigation = {
-      id: `INV-${Date.now()}`,
-      name: formData.name.trim(),
-      type: formData.type,
-      description: formData.description.trim(),
-      priority: formData.priority,
-      status: 'In Progress',
-      date: new Date().toLocaleDateString(),
-      documents: []
-    }
-
-    setInvestigations((previous) => [newInvestigation, ...previous])
-    recordAuditEvent({
-      type: 'created',
-      action: 'Investigation created',
-      description: `${newInvestigation.name} (${newInvestigation.id}) was created.`,
-      investigationId: newInvestigation.id,
-    })
-    setFormData({
-      name: '',
-      type: 'Document Analysis',
-      description: '',
-      priority: 'Medium'
-    })
-    setActiveFilter('All')
-    setSearchQuery('')
-    setModalOpen(false)
-  }
-
-  const updateInvestigation = (updated) => {
-    const previousItem = investigations.find((item) => item.id === updated.id)
-    if (previousItem && previousItem.status !== updated.status) {
-      recordAuditEvent({
-        type: 'updated',
-        action: 'Status updated',
-        description: `Status changed from ${previousItem.status} to ${updated.status}.`,
-        investigationId: updated.id,
+    try {
+      const created = await api.createInvestigation({
+        title: formData.name.trim(),
+        description: formData.description.trim(),
       })
+      const newInvestigation = mapInvestigation(created)
+      newInvestigation.type = formData.type
+      newInvestigation.priority = formData.priority
+      setInvestigations((previous) => [newInvestigation, ...previous])
+      setSelectedInvestigation(newInvestigation)
+      recordAuditEvent({
+        type: 'created',
+        action: 'Investigation created',
+        description: `${newInvestigation.name} (#${newInvestigation.id}) was created.`,
+        investigationId: newInvestigation.id,
+      })
+      setFormData({
+        name: '',
+        type: 'Document Analysis',
+        description: '',
+        priority: 'Medium'
+      })
+      setActiveFilter('All')
+      setSearchQuery('')
+      setModalOpen(false)
+    } catch (error) {
+      setApiError(error.message)
     }
-    setInvestigations((previous) =>
-      previous.map((item) =>
-        item.id === updated.id ? updated : item
-      )
-    )
-    setSelectedInvestigation(updated)
   }
 
-  const handleDocumentSelection = (event) => {
+  const handleAnalyzeInvestigation = async () => {
+    if (!selectedInvestigation || isAnalyzing) return
+    setApiError('')
+    setIsAnalyzing(true)
+    try {
+      await api.analyzeInvestigation(selectedInvestigation.backendId)
+      await refreshInvestigation(selectedInvestigation.backendId)
+      recordAuditEvent({
+        type: 'analysis',
+        action: 'Contextual analysis completed',
+        description: `Analysis completed for ${selectedInvestigation.name}.`,
+        investigationId: selectedInvestigation.id,
+      })
+    } catch (error) {
+      setApiError(error.message)
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
+  const handleDocumentSelection = async (event) => {
     const files = Array.from(event.target.files || [])
 
     if (!selectedInvestigation || files.length === 0) return
-
-const newDocuments = files.map((file) => ({
-  id: `${file.name}-${file.size}-${Date.now()}-${Math.random()}`,
-  name: file.name,
-  size: file.size,
-  type: file.type || 'Unknown file type',
-  file: file
-}))
-
-    const updated = {
-      ...selectedInvestigation,
-      documents: [...selectedInvestigation.documents, ...newDocuments]
+    setApiError('')
+    setIsLoading(true)
+    try {
+      for (const file of files) {
+        await api.uploadDocument(selectedInvestigation.backendId, file)
+      }
+      const updated = await refreshInvestigation(selectedInvestigation.backendId)
+      recordAuditEvent({
+        type: 'document',
+        action: 'Documents processed',
+        description: `${files.length} document(s) uploaded to ${updated.name}.`,
+        investigationId: updated.id,
+      })
+    } catch (error) {
+      setApiError(error.message)
+    } finally {
+      setIsLoading(false)
+      event.target.value = ''
     }
-
-    updateInvestigation(updated)
-    recordAuditEvent({
-      type: 'document',
-      action: 'Document attached',
-      description: `${files.length} document(s) attached to ${selectedInvestigation.name}.`,
-      investigationId: selectedInvestigation.id,
-    })
-    event.target.value = ''
-  }
-
-  const removeDocument = (documentId) => {
-    const updated = {
-      ...selectedInvestigation,
-      documents: selectedInvestigation.documents.filter(
-        (doc) => doc.id !== documentId
-      )
-    }
-
-    updateInvestigation(updated)
-    const removedDocument = selectedInvestigation.documents.find((doc) => doc.id === documentId)
-    recordAuditEvent({
-      type: 'deleted',
-      action: 'Document removed',
-      description: `${removedDocument?.name || 'A document'} was removed from ${selectedInvestigation.name}.`,
-      investigationId: selectedInvestigation.id,
-    })
   }
 
   const filteredInvestigations = investigations.filter((item) => {
@@ -202,6 +259,14 @@ const newDocuments = files.map((file) => ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              type="button"
+              className="investigation-primary-btn"
+              onClick={handleAnalyzeInvestigation}
+              disabled={isAnalyzing || item.documents.length === 0}
+            >
+              {isAnalyzing ? 'Analyzing…' : 'Analyze Investigation'}
+            </button>
             <button
               type="button"
               className="document-view-btn"
@@ -294,12 +359,7 @@ const newDocuments = files.map((file) => ({
                 <select
                   id="investigation-status"
                   value={item.status}
-                  onChange={(event) =>
-                    updateInvestigation({
-                      ...item,
-                      status: event.target.value
-                    })
-                  }
+                  disabled
                 >
                   <option>In Progress</option>
                   <option>Completed</option>
@@ -334,7 +394,9 @@ const newDocuments = files.map((file) => ({
                       <FileText size={21} />
                       <div className="associated-document-info">
                         <strong>{doc.name}</strong>
-                        <span>{formatSize(doc.size)}</span>
+                        <span>
+                          {doc.size ? formatSize(doc.size) : doc.processingStatus}
+                        </span>
                       </div>
                       <button
   type="button"
@@ -344,29 +406,65 @@ const newDocuments = files.map((file) => ({
 >
   View
 </button>
-                      <button
-                        className="document-remove-btn"
-                        onClick={() => removeDocument(doc.id)}
-                        aria-label={`Remove ${doc.name}`}
-                      >
-                        <Trash2 size={17} />
-                      </button>
                     </div>
                   ))}
                 </div>
               )}
 
-<DocumentSelector
-  onFilesSelected={(files) => {
-    handleDocumentSelection({
-      target: { files, value: '' }
-    })
-  }}
-/>
+              <DocumentSelector
+                onFilesSelected={(files) => {
+                  handleDocumentSelection({
+                    target: { files, value: '' }
+                  })
+                }}
+              />
+              {isLoading && <p>Processing documents…</p>}
             </div>
           </section>
 
         </div>
+
+        <section className="investigation-list-panel">
+          <div className="investigation-list-heading">
+            <div>
+              <h3>Investigation Findings</h3>
+              <p>Evidence-linked indicators; human review is required.</p>
+            </div>
+            <span className="investigation-count">
+              {item.findings?.length || 0} Findings
+            </span>
+          </div>
+          {item.findings?.length ? item.findings.map((finding) => (
+            <article key={finding.id} className="associated-document">
+              <div>
+                <strong>{finding.title}</strong>
+                <p>{finding.explanation}</p>
+                <span>
+                  {finding.severity} · {finding.classification}
+                </span>
+                {(finding.evidence || []).map((evidence, index) => (
+                  <small key={`${evidence.document_id}-${evidence.page}-${index}`}>
+                    Document {evidence.document_id}, page {evidence.page}
+                    {evidence.bbox
+                      ? ` · region ${evidence.bbox.x0}, ${evidence.bbox.y0}`
+                      : ''}
+                    {evidence.value ? ` · ${evidence.label}: ${evidence.value}` : ''}
+                  </small>
+                ))}
+              </div>
+            </article>
+          )) : (
+            <div className="associated-documents-empty">
+              <p>
+                {item.documents.length
+                  ? 'Run analysis to compare the processed documents.'
+                  : 'Upload documents to begin the investigation.'}
+              </p>
+            </div>
+          )}
+        </section>
+
+        {apiError && <section className="upload-errors" role="alert">{apiError}</section>}
 
         {previewDocument && (
           <DocumentViewer
@@ -397,6 +495,9 @@ const newDocuments = files.map((file) => ({
           <h1>Investigations</h1>
           <p>Manage, monitor and organize your document investigations.</p>
         </div>
+
+        {apiError && <section className="upload-errors" role="alert">{apiError}</section>}
+        {isLoading && investigations.length === 0 && <p>Loading investigations…</p>}
 
         <button
           className="investigation-primary-btn"

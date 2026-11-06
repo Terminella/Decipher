@@ -1,5 +1,5 @@
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Upload,
   FileText,
@@ -14,18 +14,17 @@ import {
   ShieldCheck,
   ArrowRight,
 } from 'lucide-react'
+import api from '../services/api'
 
 const ACCEPTED_TYPES = [
   '.pdf',
-  '.doc',
-  '.docx',
-  '.txt',
-  '.csv',
-  '.xls',
-  '.xlsx',
   '.png',
   '.jpg',
   '.jpeg',
+  '.tif',
+  '.tiff',
+  '.bmp',
+  '.webp',
 ]
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024
@@ -64,6 +63,18 @@ export default function UploadPage() {
   const [errors, setErrors] = useState([])
   const [isDragging, setIsDragging] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  const [investigations, setInvestigations] = useState([])
+  const [investigationId, setInvestigationId] = useState('')
+  const [investigationTitle, setInvestigationTitle] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [workflowError, setWorkflowError] = useState('')
+  const [workflowResult, setWorkflowResult] = useState(null)
+
+  useEffect(() => {
+    api.getInvestigations()
+      .then(setInvestigations)
+      .catch((error) => setWorkflowError(error.message))
+  }, [])
 
   const processFiles = (selectedFiles) => {
     const newErrors = []
@@ -128,9 +139,51 @@ export default function UploadPage() {
     setFiles([])
     setErrors([])
     setConfirmed(false)
+    setWorkflowResult(null)
 
     if (inputRef.current) {
       inputRef.current.value = ''
+    }
+  }
+
+  const submitDocuments = async () => {
+    if (files.length === 0 || isSubmitting) return
+
+    setWorkflowError('')
+    setWorkflowResult(null)
+    setIsSubmitting(true)
+
+    try {
+      let activeInvestigationId = investigationId
+
+      if (!activeInvestigationId && investigationTitle.trim()) {
+        const created = await api.createInvestigation({
+          title: investigationTitle.trim(),
+          description: 'Created from the document upload workflow.',
+        })
+        activeInvestigationId = String(created.id)
+        setInvestigationId(activeInvestigationId)
+        setInvestigations((previous) => [created, ...previous])
+      }
+
+      if (!activeInvestigationId) {
+        throw new Error('Select an investigation or enter a name to create one.')
+      }
+
+      for (const file of files) {
+        await api.uploadDocument(activeInvestigationId, file)
+      }
+
+      const analysis = await api.analyzeInvestigation(activeInvestigationId)
+      setWorkflowResult({
+        investigationId: activeInvestigationId,
+        ...analysis,
+      })
+      setConfirmed(true)
+    } catch (error) {
+      setWorkflowError(error.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -169,6 +222,44 @@ export default function UploadPage() {
           Secure document workspace
         </div>
       </div>
+
+      <section className="upload-panel">
+        <div className="upload-panel-heading">
+          <div>
+            <h3>Investigation</h3>
+            <p>Select an existing case or create one for these documents.</p>
+          </div>
+        </div>
+        <label>
+          Existing investigation
+          <select
+            value={investigationId}
+            onChange={(event) => {
+              setInvestigationId(event.target.value)
+              setInvestigationTitle('')
+            }}
+          >
+            <option value="">Select an investigation</option>
+            {investigations.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.title} (#{item.id})
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Or create a new investigation
+          <input
+            value={investigationTitle}
+            onChange={(event) => {
+              setInvestigationTitle(event.target.value)
+              if (event.target.value) setInvestigationId('')
+            }}
+            placeholder="Investigation name"
+            maxLength={255}
+          />
+        </label>
+      </section>
 
       {/* Upload Area */}
 
@@ -238,7 +329,7 @@ export default function UploadPage() {
           <span>SUPPORTED FORMATS</span>
 
           <div className="format-list">
-            {['PDF', 'DOCX', 'XLSX', 'CSV', 'TXT', 'JPG', 'PNG'].map(
+            {['PDF', 'JPG', 'PNG', 'TIF', 'TIFF', 'BMP', 'WEBP'].map(
               (format) => (
                 <span key={format}>{format}</span>
               )
@@ -260,6 +351,16 @@ export default function UploadPage() {
             <p key={index}>{error}</p>
           ))}
         </section>
+      )}
+
+      {workflowError && (
+      <section className="upload-errors" role="alert">
+        <div className="error-heading">
+          <AlertCircle size={19} />
+          Upload or analysis failed
+        </div>
+        <p>{workflowError}</p>
+      </section>
       )}
 
       {/* Selected Files */}
@@ -360,16 +461,19 @@ export default function UploadPage() {
 
             <button
               className="button-primary"
-              onClick={() => setConfirmed(true)}
+              onClick={submitDocuments}
+              disabled={isSubmitting}
             >
-              {confirmed ? (
+              {isSubmitting ? (
+                <>Uploading and analyzing…</>
+              ) : confirmed ? (
                 <>
                   <CheckCircle2 size={18} />
-                  Selection Confirmed
+                  Analysis Complete
                 </>
               ) : (
                 <>
-                  Confirm Selection
+                  Upload and Analyze
                   <ArrowRight size={18} />
                 </>
               )}
@@ -380,11 +484,29 @@ export default function UploadPage() {
         {confirmed && (
           <div className="confirmation-message">
             <CheckCircle2 size={19} />
-            Your file selection is confirmed locally. No files have
-            been uploaded to a server or analyzed.
+            {workflowResult?.findings_count ?? 0} findings saved for
+            investigation #{workflowResult?.investigationId}.
           </div>
         )}
       </section>
+
+      {workflowResult?.findings?.length > 0 && (
+        <section className="upload-panel">
+          <div className="upload-panel-heading">
+            <div>
+              <h3>Analysis Findings</h3>
+              <p>Automated indicators require human review; they are not proof of fraud.</p>
+            </div>
+          </div>
+          {workflowResult.findings.map((finding, index) => (
+            <div key={`${finding.title}-${index}`}>
+              <strong>{finding.title}</strong>
+              <p>{finding.explanation}</p>
+              <span>{finding.severity} · {finding.classification}</span>
+            </div>
+          ))}
+        </section>
+      )}
 
       {/* Information */}
 
@@ -394,9 +516,8 @@ export default function UploadPage() {
         <div>
           <strong>Document handling information</strong>
           <p>
-            This frontend prototype keeps selected file references
-            in browser memory only. No permanent storage or server
-            upload is currently configured.
+            Documents are sent to the configured Decipher backend for
+            processing and retained in its evidence storage.
           </p>
         </div>
       </div>

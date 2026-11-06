@@ -1,6 +1,7 @@
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import FindingCard from '../components/FindingCard'
+import api from '../services/api'
 import {
   Plus,
   Search,
@@ -60,6 +61,68 @@ export default function FindingsPage() {
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(initialForm)
   const [formError, setFormError] = useState('')
+  const [apiError, setApiError] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    async function loadFindings() {
+      try {
+        const records = await api.getInvestigations()
+        const investigations = await Promise.all(
+          records.map((record) => api.getInvestigation(record.id))
+        )
+        const loaded = investigations.flatMap((investigation) =>
+          (investigation.findings || []).map((finding) => {
+            const evidence = finding.evidence || []
+            const documents = new Map(
+              investigation.documents.map((document) => [
+                String(document.id),
+                document.filename,
+              ])
+            )
+            const evidenceText = evidence.map((item) => {
+              const filename = documents.get(String(item.document_id))
+                || `Document ${item.document_id}`
+              const coordinates = item.bbox
+                ? `, region ${item.bbox.x0}, ${item.bbox.y0}`
+                : ''
+              return `${filename}, page ${item.page}${coordinates}${item.value ? `: ${item.value}` : ''}`
+            }).join('; ')
+
+            return {
+              id: String(finding.id),
+              title: finding.title,
+              investigation: investigation.title,
+              category: (finding.anomaly_type || 'finding').replaceAll('_', ' '),
+              severity: finding.severity === 'info'
+                ? 'Low'
+                : `${finding.severity || 'low'}`.replace(/^./, (letter) => letter.toUpperCase()),
+              status: 'Under Review',
+              description: finding.explanation || '',
+              evidence: evidenceText,
+              evidenceItems: evidence,
+              classification: finding.classification,
+              observationStatus: finding.observation_status,
+              priorityScore: finding.priority_score,
+              createdAt: finding.created_at,
+              backend: true,
+            }
+          })
+        )
+        if (active) {
+          setFindings(loaded)
+        }
+      } catch (error) {
+        if (active) setApiError(error.message)
+      }
+    }
+
+    loadFindings()
+    return () => {
+      active = false
+    }
+  }, [])
 
   const stats = useMemo(() => ({
     total: findings.length,
@@ -192,18 +255,22 @@ export default function FindingsPage() {
           </div>
 
           <div className="finding-detail-actions">
-            <button
-              className="finding-outline-btn"
-              onClick={() => openEditModal(currentFinding)}
-            >
-              <Pencil size={16} /> Edit
-            </button>
-            <button
-              className="finding-delete-btn"
-              onClick={() => deleteFinding(currentFinding.id)}
-            >
-              <Trash2 size={16} /> Delete
-            </button>
+            {!currentFinding.backend && (
+              <>
+                <button
+                  className="finding-outline-btn"
+                  onClick={() => openEditModal(currentFinding)}
+                >
+                  <Pencil size={16} /> Edit
+                </button>
+                <button
+                  className="finding-delete-btn"
+                  onClick={() => deleteFinding(currentFinding.id)}
+                >
+                  <Trash2 size={16} /> Delete
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -259,6 +326,7 @@ export default function FindingsPage() {
                 <select
                   className="finding-select"
                   value={currentFinding.status}
+                  disabled={currentFinding.backend}
                   onChange={event =>
                     updateStatus(currentFinding.id, event.target.value)
                   }
@@ -294,6 +362,8 @@ export default function FindingsPage() {
           <h1>Findings</h1>
           <p>Record, review and manage findings from your investigations.</p>
         </div>
+
+        {apiError && <section className="upload-errors" role="alert">{apiError}</section>}
 
         <button className="finding-primary-btn" onClick={openCreateModal}>
           <Plus size={18} />
@@ -363,7 +433,7 @@ export default function FindingsPage() {
                 ? 'Create a finding to document an anomaly, observation or issue discovered during an investigation.'
                 : 'Try changing your search or filters.'}
             </p>
-            {findings.length === 0 && (
+            {findings.length === 0 && !apiError && (
               <button className="finding-primary-btn" onClick={openCreateModal}>
                 <Plus size={17} /> Create First Finding
               </button>
@@ -407,18 +477,22 @@ export default function FindingsPage() {
                         >
                           <Eye size={16} />
                         </button>
-                        <button
-                          title="Edit finding"
-                          onClick={() => openEditModal(item)}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          title="Delete finding"
-                          onClick={() => deleteFinding(item.id)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {!item.backend && (
+                          <>
+                            <button
+                              title="Edit finding"
+                              onClick={() => openEditModal(item)}
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              title="Delete finding"
+                              onClick={() => deleteFinding(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
