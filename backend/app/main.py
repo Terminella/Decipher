@@ -62,7 +62,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import init_db
-from app.routes import documents, investigations, reports
+from app.routes import (
+    ai_environment,
+    ai_analysis,
+    ai_interactions,
+    ai_investigations,
+    documents,
+    investigations,
+    reports,
+)
 
 
 @asynccontextmanager
@@ -93,6 +101,10 @@ app.add_middleware(
 app.include_router(documents.router)
 app.include_router(investigations.router)
 app.include_router(reports.router)
+app.include_router(ai_environment.router)
+app.include_router(ai_investigations.router)
+app.include_router(ai_analysis.router)
+app.include_router(ai_interactions.router)
 
 
 @app.get("/")

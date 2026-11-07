@@ -47,7 +47,9 @@ Responsibilities:
 - Visual-forensics analysis
 - Contextual comparison
 - Evidence association
-- Report generation
+- Investigation report generation
+- Optional Ollama runtime and installed-model discovery
+- Separate AI-investigation metadata and source-document links
 
 ### Data and Persistence Tier
 
@@ -63,6 +65,8 @@ Responsibilities:
 - Extracted fields
 - Findings
 - Generated reports
+- AI-investigation configuration, source links, execution records, findings,
+  evidence references, reviews, chat messages, and audit events
 
 ## 3. Processing Workflow
 
@@ -78,8 +82,20 @@ Responsibilities:
 10. Each analysis run stores a timestamped snapshot of its findings and
     analyzed documents; later runs refresh the current findings without
     overwriting prior run snapshots.
-11. Report generator produces an investigation dossier.
+11. Report generation produces a JSON dossier or a separately stored
+    professional PDF rendition of the same report data.
 12. Frontend displays current findings and provides report access.
+
+The AI-investigation API is additive and separate from the standard workflow.
+It can create independent AI investigations, link existing standard
+investigations, select documents from explicitly linked sources, and store
+additional AI-only uploads without invoking the standard document pipeline.
+Ollama availability and installed-model discovery are exposed under `/ai`;
+they are not prerequisites for standard uploads or analysis.
+
+AI database entities use new tables created by the existing SQLAlchemy
+`create_all` startup routine. Existing standard tables and processing
+contracts are not changed by this addition.
 
 The investigation API passes Department 4's observed visual pages and field
 metadata into Department 3, including page coordinates scaled to the visual
@@ -101,13 +117,37 @@ Each uploaded document is associated with:
 Findings retain their classification, severity, explanation, and evidence
 metadata.
 
-Generated reports are retained as JSON files and indexed in the database.
-The API download endpoint returns the report with document summaries,
-extracted fields, contextual findings, visual observations, and limitations.
+Generated JSON and PDF reports are retained as files and indexed in the
+database. The existing JSON endpoint and response contract remain unchanged;
+PDF reports use a separate generation endpoint and the download route selects
+the media type from the stored report format.
 Analysis history is available through
 `GET /investigations/{id}/analysis-runs` and
 `GET /investigations/{id}/analysis-runs/{run_id}`; it is backend-only and does
 not change the existing frontend.
+
+AI investigation records are available through `/ai/investigations`; runtime
+and model discovery are available through `/ai/environment` and `/ai/models`.
+Multi-stage AI execution is queued in a bounded worker pool and exposes
+progress, cancellation, and run-history APIs. Source files are hash-checked
+before analysis; generated findings are persisted only when their evidence
+references resolve to exact source quotes and valid pages. The frontend
+provides a separate AI workspace for model selection, attaching source
+documents, AI-only uploads, progress, findings, source-grounded chat, human
+reviews, and AI-run PDF export. Chat persists conversations and restricts
+returned citations to retrieved source evidence. Review decisions/comments are
+stored as history and audit events. Completed AI runs are exported to their
+own persisted PDF reports without changing standard investigation reports.
+Quick analysis is the default and makes one bounded local-model request with a
+compact evidence set; its default inference timeout is two minutes. Standard
+and deep analysis retain the multi-stage workflow for users who choose the
+longer review. Quick mode disables optional model thinking so its limited
+output budget is used for structured findings rather than hidden reasoning.
+
+Standard and AI PDFs include a contents page, clickable section bookmarks,
+wrapped tables, and an embedded reportlab Vera Unicode font when available.
+AI reports include run/model metadata, source evidence quotes, finding review
+status and history, and a human-review disclaimer.
 
 ## 5. Limitations
 

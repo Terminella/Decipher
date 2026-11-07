@@ -19,3 +19,6 @@ storage/
 .env
 __pycache__/
 *.py[cod]
+
+# VS Code workspace settings
+.vscode/

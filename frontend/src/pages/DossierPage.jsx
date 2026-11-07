@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import StatusPill from '../components/StatusPill'
 import api from '../services/api'
+import { formatDate as formatLocalDate } from '../utils/dateTime'
 
 const initialForm = {
   title: '',
@@ -32,11 +33,7 @@ const statusOptions = ['Draft', 'In Review', 'Completed']
 const priorityOptions = ['Low', 'Medium', 'High', 'Critical']
 
 function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+  return formatLocalDate(date)
 }
 
 export default function DossierPage() {
@@ -52,6 +49,7 @@ export default function DossierPage() {
   const [reports, setReports] = useState([])
   const [apiError, setApiError] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
 
   useEffect(() => {
     api.getInvestigations()
@@ -84,6 +82,20 @@ export default function DossierPage() {
       setApiError(error.message)
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const generateInvestigationPdf = async () => {
+    if (!selectedInvestigationId || isGeneratingPdf) return
+    setApiError('')
+    setIsGeneratingPdf(true)
+    try {
+      await api.generatePdfReport(selectedInvestigationId)
+      setReports(await api.getReports(selectedInvestigationId))
+    } catch (error) {
+      setApiError(error.message)
+    } finally {
+      setIsGeneratingPdf(false)
     }
   }
 
@@ -411,7 +423,7 @@ export default function DossierPage() {
         <div>
           <span className="dossier-eyebrow">INVESTIGATION WORKSPACE</span>
           <h1>Dossiers & Reports</h1>
-          <p>Compile investigation information and manage your reports.</p>
+          <p>Generate structured data or a navigable PDF dossier for a standard investigation.</p>
         </div>
 
         <button className="dossier-primary-btn" onClick={openCreateModal}>
@@ -440,14 +452,24 @@ export default function DossierPage() {
               ))}
             </select>
           </div>
-          <button
-            className="dossier-primary-btn"
-            onClick={generateInvestigationReport}
-            disabled={!selectedInvestigationId || isGenerating}
-          >
-            <FileText size={17} />
-            {isGenerating ? 'Generating…' : 'Generate Report'}
-          </button>
+          <div className="dossier-detail-actions">
+            <button
+              className="dossier-secondary-btn"
+              onClick={generateInvestigationReport}
+              disabled={!selectedInvestigationId || isGenerating || isGeneratingPdf}
+            >
+              <FileText size={17} />
+              {isGenerating ? 'Generating…' : 'Generate structured JSON'}
+            </button>
+            <button
+              className="dossier-primary-btn"
+              onClick={generateInvestigationPdf}
+              disabled={!selectedInvestigationId || isGenerating || isGeneratingPdf}
+            >
+              <FileCheck2 size={17} />
+              {isGeneratingPdf ? 'Generating…' : 'Generate formatted PDF'}
+            </button>
+          </div>
         </div>
         {apiError && <p role="alert">{apiError}</p>}
         {reports.length ? (
@@ -456,7 +478,7 @@ export default function DossierPage() {
               <div className="associated-document" key={report.id}>
                 <FileText size={20} />
                 <div className="associated-document-info">
-                  <strong>Investigation #{report.investigation_id} report</strong>
+                  <strong>Investigation #{report.investigation_id} {report.format?.toUpperCase() || 'JSON'} report</strong>
                   <span>{formatDate(report.created_at)}</span>
                 </div>
                 <a
@@ -465,7 +487,7 @@ export default function DossierPage() {
                   download
                 >
                   <FileCheck2 size={16} />
-                  Download JSON dossier
+                  Download {report.format?.toUpperCase() || 'JSON'} dossier
                 </a>
               </div>
             ))}

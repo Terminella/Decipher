@@ -19,6 +19,7 @@ import {
   CalendarDays,
 } from 'lucide-react'
 import StatusPill from '../components/StatusPill'
+import { formatDate as formatLocalDate } from '../utils/dateTime'
 
 const severityOptions = ['Critical', 'High', 'Medium', 'Low']
 const statusOptions = ['Open', 'Under Review', 'Resolved']
@@ -44,11 +45,7 @@ function SeverityBadge({ severity }) {
 
 
 function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+  return formatLocalDate(date)
 }
 
 export default function FindingsPage() {

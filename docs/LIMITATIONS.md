@@ -46,8 +46,30 @@
 - SQLite is intended for the demonstration workload.
 - Uploaded files should be treated as untrusted input.
 - Manual dossier-authoring controls are not backed by persistent API data.
-  Generated investigation reports are available separately as downloadable
-  JSON dossiers.
+  Generated investigation reports are available as downloadable JSON or PDF
+  files; PDF does not replace or alter the existing JSON report contract.
+- The AI-investigation backend currently supports configuration, runtime
+  discovery, source/document linking, AI-only uploads, asynchronous
+  multi-stage inference, evidence-checked findings, cancellation, and audit
+  events, source-grounded persistent chat, append-only human finding reviews,
+  and persisted AI-run PDF export.
+- Review names are user-entered and are not authenticated identities because
+  the prototype does not implement user authentication or authorization.
+- New AI tables are created by SQLAlchemy `create_all`; the project does not
+  yet have a versioned database migration workflow for production upgrades.
+- Ollama discovery reports the runtime as unavailable when its configured API
+  cannot be reached, even if the Ollama executable is installed.
+- Hardware profiling uses platform memory APIs and `nvidia-smi`. GPU absence
+  cannot be established when NVIDIA tooling is unavailable, and model-fit
+  recommendations are heuristics rather than compatibility guarantees.
+- AI-only image/scanned-document analysis is not implemented yet; document
+  uploads are stored without invoking standard OCR or forensic processing.
+  The AI analysis worker falls back to the existing OCR service when saved text
+  is unavailable. The fallback path and real scanned-image behavior have not
+  been validated against a live local model in this test run.
+- Ollama inference and model behavior were tested with a scripted client, not a
+  live local model; output quality and real-runtime compatibility remain
+  unverified while the configured Ollama service is unreachable.
 
 ## Interpretation
 

@@ -21,7 +21,7 @@ export default function DocumentViewer({ file, onClose }) {
     file.name.toLowerCase().endsWith('.pdf')
 
   const isImage = file.type.startsWith('image/') ||
-    /\.(png|jpe?g)$/i.test(file.name)
+    /\.(png|jpe?g|tiff?|bmp|webp)$/i.test(file.name)
 
   return (
     <div

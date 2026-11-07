@@ -1,5 +1,6 @@
 
 import { X, Clock, FileText, Plus, Pencil, Trash2 } from 'lucide-react'
+import { formatDateTime } from '../utils/dateTime'
 
 const icons = {
   created: Plus,
@@ -57,7 +58,7 @@ export default function AuditTrailModal({
                       <span>
                         {event.actor || 'Unknown user'} ·{' '}
                         {event.timestamp
-                          ? new Date(event.timestamp).toLocaleString('en-IN')
+                          ? formatDateTime(event.timestamp)
                           : 'Time unavailable'}
                       </span>
                     </div>

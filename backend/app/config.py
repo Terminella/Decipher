@@ -20,6 +20,15 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_timeout: str = "3"
+    ollama_inference_timeout: str = "600"
+    ollama_context_window: str = "8192"
+    ollama_max_concurrency: str = "1"
+    ollama_quick_timeout: str = "120"
+    ollama_quick_context_window: str = "4096"
+    ollama_quick_max_output_tokens: str = "1024"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

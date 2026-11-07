@@ -3,6 +3,7 @@ import DocumentSelector from '../components/DocumentSelector'
 import AuditTrailModal from '../components/AuditTrailModal'
 import { useEffect, useState } from 'react'
 import api from '../services/api'
+import { formatDate } from '../utils/dateTime'
 import {
   Search, Plus, SlidersHorizontal, FolderSearch, History,
   FileText, Clock3, CircleCheck, CircleAlert,
@@ -35,9 +36,7 @@ function mapInvestigation(record) {
     description: record.description || '',
     priority: 'Medium',
     status: record.status === 'analyzed' ? 'Completed' : 'In Progress',
-    date: record.created_at
-      ? new Date(record.created_at).toLocaleDateString()
-      : '',
+    date: record.created_at ? formatDate(record.created_at) : '',
     documents: (record.documents || []).map(mapDocument),
     findings: record.findings || [],
   }
@@ -195,6 +194,22 @@ function InvestigationPage({ onNavigate }) {
     } finally {
       setIsLoading(false)
       event.target.value = ''
+    }
+  }
+
+  const handleDocumentPreview = async (document) => {
+    if (!selectedInvestigation || !document.backendId) return
+    setApiError('')
+    try {
+      const blob = await api.getDocumentPreview(
+        selectedInvestigation.backendId,
+        document.backendId,
+      )
+      setPreviewDocument(new File([blob], document.name, {
+        type: blob.type || 'application/octet-stream',
+      }))
+    } catch (error) {
+      setApiError(error.message)
     }
   }
 
@@ -399,13 +414,12 @@ function InvestigationPage({ onNavigate }) {
                         </span>
                       </div>
                       <button
-  type="button"
-  className="document-view-btn"
-  onClick={() => setPreviewDocument(doc.file)}
-  disabled={!doc.file}
->
-  View
-</button>
+                        type="button"
+                        className="document-view-btn"
+                        onClick={() => handleDocumentPreview(doc)}
+                      >
+                        View
+                      </button>
                     </div>
                   ))}
                 </div>
