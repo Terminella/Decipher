@@ -1,6 +1,7 @@
 
 import { Eye, Pencil, CalendarDays } from 'lucide-react'
 import StatusPill from './StatusPill'
+import { formatDate } from '../utils/dateTime'
 
 export default function FindingCard({
   finding,
@@ -34,9 +35,7 @@ export default function FindingCard({
 
         <span>
           <CalendarDays size={14} />
-          {finding.createdAt
-            ? new Date(finding.createdAt).toLocaleDateString('en-IN')
-            : 'No date'}
+          {finding.createdAt ? formatDate(finding.createdAt) : 'No date'}
         </span>
       </div>
 
