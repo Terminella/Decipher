@@ -4,7 +4,9 @@ import api from './services/api'
 import DossierPage from './pages/DossierPage'
 import UploadPage from './pages/UploadPage'
 import InvestigationPage from './pages/InvestigationPage'
+import AIInvestigationPage from './pages/AIInvestigationPage'
 import SettingsPage from './pages/SettingsPage'
+import { formatDate, formatDateTime } from './utils/dateTime'
 
 import {
   LayoutDashboard,
@@ -27,6 +29,7 @@ import {
   Activity,
   Menu,
   X,
+  BrainCircuit,
 } from 'lucide-react'
 
 // ==========================================
@@ -36,6 +39,7 @@ import {
 const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard },
   { name: 'Investigations', icon: FolderSearch },
+  { name: 'AI Investigation', icon: BrainCircuit },
   { name: 'Upload Documents', icon: Upload },
   { name: 'Findings', icon: FileSearch },
   { name: 'Dossiers & Reports', icon: FileText },
@@ -221,7 +225,7 @@ function Dashboard({ onNavigate }) {
           documents: investigation.documents.length,
           findingCount: investigation.findings.length,
           date: investigation.created_at
-            ? new Date(investigation.created_at).toLocaleDateString()
+            ? formatDate(investigation.created_at)
             : 'Date unavailable',
           status: investigation.status === 'analyzed'
             ? 'Completed'
@@ -539,7 +543,7 @@ function Dashboard({ onNavigate }) {
 
                       <small>
                         <Clock3 size={13} />
-                        {new Date(activity.timestamp).toLocaleString('en-IN')}
+                        {formatDateTime(activity.timestamp)}
                       </small>
                     </div>
                   </div>
@@ -765,6 +769,8 @@ export default function App() {
     <UploadPage />
   ) : activePage === 'Investigations' ? (
     <InvestigationPage onNavigate={navigate} />
+  ) : activePage === 'AI Investigation' ? (
+    <AIInvestigationPage />
   ) : activePage === 'Findings' ? (
     <FindingsPage />
   ) : activePage === 'Dossiers & Reports' ? (
