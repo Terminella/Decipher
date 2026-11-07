@@ -1,8 +1,10 @@
 import json
+import mimetypes
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -412,6 +414,37 @@ def get_investigation(
             for finding in investigation.findings
         ],
     }
+
+
+@router.get("/{investigation_id}/documents/{document_id}/preview")
+def preview_investigation_document(
+    investigation_id: int,
+    document_id: int,
+    db: Session = Depends(get_db),
+):
+    document = (
+        db.query(Document)
+        .filter(
+            Document.id == document_id,
+            Document.investigation_id == investigation_id,
+        )
+        .first()
+    )
+    if not document:
+        raise HTTPException(404, "Document not found in this investigation.")
+
+    try:
+        path = evidence_manager.get_document_path(document.storage_path)
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(404, "The stored document is unavailable.") from exc
+
+    media_type = mimetypes.guess_type(document.filename)[0]
+    return FileResponse(
+        path=path,
+        media_type=media_type or "application/octet-stream",
+        filename=document.filename,
+        content_disposition_type="inline",
+    )
 
 
 @router.get("/{investigation_id}/analysis-runs")

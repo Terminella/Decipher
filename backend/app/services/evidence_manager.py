@@ -1,6 +1,7 @@
 import hashlib
 import uuid
 from pathlib import Path
+from typing import Union
 
 from fastapi import UploadFile
 
@@ -20,7 +21,7 @@ class EvidenceManager:
     async def save_upload(
         self,
         file: UploadFile,
-        investigation_id: int,
+        investigation_id: Union[int, str],
     ) -> tuple[str, str]:
         original_name = Path(file.filename or "document").name
         suffix = Path(original_name).suffix.lower()
@@ -64,7 +65,7 @@ class EvidenceManager:
 
     def save_report(
         self,
-        investigation_id: int,
+        investigation_id: Union[int, str],
         filename: str,
         content: bytes,
     ) -> str:
