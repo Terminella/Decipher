@@ -11,20 +11,15 @@ import {
   CheckCircle2,
   AlertCircle,
   FolderOpen,
+  FolderPlus,
   ShieldCheck,
   ArrowRight,
 } from 'lucide-react'
 import api from '../services/api'
 
 const ACCEPTED_TYPES = [
-  '.pdf',
-  '.png',
-  '.jpg',
-  '.jpeg',
-  '.tif',
-  '.tiff',
-  '.bmp',
-  '.webp',
+  '.pdf', '.png', '.jpg', '.jpeg',
+  '.tif', '.tiff', '.bmp', '.webp',
 ]
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024
@@ -32,26 +27,16 @@ const MAX_FILE_SIZE = 20 * 1024 * 1024
 function getFileIcon(fileName) {
   const extension = fileName.split('.').pop().toLowerCase()
 
-  if (['jpg', 'jpeg', 'png'].includes(extension)) {
-    return FileImage
-  }
-
-  if (['xls', 'xlsx', 'csv'].includes(extension)) {
-    return FileSpreadsheet
-  }
-
-  if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
-    return FileText
-  }
+  if (['jpg', 'jpeg', 'png'].includes(extension)) return FileImage
+  if (['xls', 'xlsx', 'csv'].includes(extension)) return FileSpreadsheet
+  if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) return FileText
 
   return File
 }
 
 function formatFileSize(bytes) {
   if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(1)} KB`
-  }
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
 
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
@@ -115,9 +100,7 @@ export default function UploadPage() {
               existing.lastModified === file.lastModified
           )
 
-          if (!alreadyExists) {
-            combined.push(file)
-          }
+          if (!alreadyExists) combined.push(file)
         })
 
         return combined
@@ -128,10 +111,7 @@ export default function UploadPage() {
   }
 
   const removeFile = (index) => {
-    setFiles((previous) =>
-      previous.filter((_, fileIndex) => fileIndex !== index)
-    )
-
+    setFiles((previous) => previous.filter((_, i) => i !== index))
     setConfirmed(false)
   }
 
@@ -141,9 +121,7 @@ export default function UploadPage() {
     setConfirmed(false)
     setWorkflowResult(null)
 
-    if (inputRef.current) {
-      inputRef.current.value = ''
-    }
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   const submitDocuments = async () => {
@@ -161,6 +139,7 @@ export default function UploadPage() {
           title: investigationTitle.trim(),
           description: 'Created from the document upload workflow.',
         })
+
         activeInvestigationId = String(created.id)
         setInvestigationId(activeInvestigationId)
         setInvestigations((previous) => [created, ...previous])
@@ -175,10 +154,12 @@ export default function UploadPage() {
       }
 
       const analysis = await api.analyzeInvestigation(activeInvestigationId)
+
       setWorkflowResult({
         investigationId: activeInvestigationId,
         ...analysis,
       })
+
       setConfirmed(true)
     } catch (error) {
       setWorkflowError(error.message)
@@ -193,15 +174,10 @@ export default function UploadPage() {
     processFiles(event.dataTransfer.files)
   }
 
-  const totalSize = files.reduce(
-    (total, file) => total + file.size,
-    0
-  )
+  const totalSize = files.reduce((total, file) => total + file.size, 0)
 
   return (
     <div className="upload-page">
-
-      {/* Page Heading */}
 
       <div className="upload-heading">
         <div>
@@ -212,9 +188,7 @@ export default function UploadPage() {
 
           <h1>Upload Documents</h1>
 
-          <p>
-            Add your documents to begin the investigation workflow.
-          </p>
+          <p>Add your documents to begin the investigation workflow.</p>
         </div>
 
         <div className="secure-label">
@@ -223,42 +197,128 @@ export default function UploadPage() {
         </div>
       </div>
 
-      <section className="upload-panel">
-        <div className="upload-panel-heading">
+      {/* Investigation Selection */}
+
+      <section className="upload-panel investigation-setup-panel">
+        <div className="upload-panel-heading investigation-setup-heading">
           <div>
-            <h3>Investigation</h3>
-            <p>Select an existing case or create one for these documents.</p>
+            <div className="investigation-setup-eyebrow">
+              CASE ORGANIZATION
+            </div>
+
+            <h3>Where should these documents go?</h3>
+
+            <p>
+              Choose an existing investigation or create a new case
+              to keep your documents organized.
+            </p>
           </div>
+
+          <span className="investigation-setup-step">
+            STEP 01 / 03
+          </span>
         </div>
-        <label>
-          Existing investigation
-          <select
-            value={investigationId}
-            onChange={(event) => {
-              setInvestigationId(event.target.value)
-              setInvestigationTitle('')
-            }}
-          >
-            <option value="">Select an investigation</option>
-            {investigations.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title} (#{item.id})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Or create a new investigation
-          <input
-            value={investigationTitle}
-            onChange={(event) => {
-              setInvestigationTitle(event.target.value)
-              if (event.target.value) setInvestigationId('')
-            }}
-            placeholder="Investigation name"
-            maxLength={255}
-          />
-        </label>
+
+        <div className="investigation-choice-grid">
+
+          {/* Existing Investigation */}
+
+          <div className={`investigation-choice-card ${investigationId ? 'is-selected' : ''}`}>
+            <div className="investigation-choice-topline">
+              <div className="investigation-choice-icon">
+                <FolderOpen size={21} />
+              </div>
+
+              {investigationId && (
+                <span className="investigation-choice-selected">
+                  Selected
+                </span>
+              )}
+            </div>
+
+            <h4>Existing investigation</h4>
+
+            <p>Continue working on an existing case.</p>
+
+            <label
+              className="investigation-field-label"
+              htmlFor="existing-investigation"
+            >
+              Select a case
+            </label>
+
+            <select
+              id="existing-investigation"
+              className="investigation-select"
+              value={investigationId}
+              onChange={(event) => {
+                setInvestigationId(event.target.value)
+                setInvestigationTitle('')
+              }}
+            >
+              <option value="">Choose an investigation</option>
+
+              {investigations.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title} (#{item.id})
+                </option>
+              ))}
+            </select>
+
+            {investigations.length === 0 && (
+              <span className="investigation-field-hint">
+                No existing investigations found. Create a new case instead.
+              </span>
+            )}
+          </div>
+
+          {/* New Investigation */}
+
+          <div className={`investigation-choice-card ${investigationTitle.trim() ? 'is-selected' : ''}`}>
+            <div className="investigation-choice-topline">
+              <div className="investigation-choice-icon">
+                <FolderPlus size={21} />
+              </div>
+
+              {investigationTitle.trim() && (
+                <span className="investigation-choice-selected">
+                  Selected
+                </span>
+              )}
+            </div>
+
+            <h4>New investigation</h4>
+
+            <p>Start a fresh case for these documents.</p>
+
+            <label
+              className="investigation-field-label"
+              htmlFor="new-investigation-name"
+            >
+              Investigation name
+            </label>
+
+            <input
+              id="new-investigation-name"
+              className="investigation-name-input"
+              value={investigationTitle}
+              onChange={(event) => {
+                setInvestigationTitle(event.target.value)
+
+                if (event.target.value) {
+                  setInvestigationId('')
+                }
+              }}
+              placeholder="e.g. Vendor invoice verification"
+              maxLength={255}
+            />
+
+            <span className="investigation-field-hint">
+              Use a short, recognizable name for this case.
+            </span>
+          </div>
+
+        </div>
       </section>
 
       {/* Upload Area */}
@@ -267,12 +327,10 @@ export default function UploadPage() {
         <div className="upload-panel-heading">
           <div>
             <h3>Select your documents</h3>
-            <p>
-              Upload individual files or multiple documents together.
-            </p>
+            <p>Upload individual files or multiple documents together.</p>
           </div>
 
-          <div className="upload-step">STEP 01 / 03</div>
+          <div className="upload-step">STEP 02 / 03</div>
         </div>
 
         <div
@@ -292,13 +350,9 @@ export default function UploadPage() {
             <Upload size={34} />
           </div>
 
-          <h2>
-            Drag and drop your documents here
-          </h2>
+          <h2>Drag and drop your documents here</h2>
 
-          <p>
-            or browse files from your computer
-          </p>
+          <p>or browse files from your computer</p>
 
           <button
             className="button-primary browse-button"
@@ -320,9 +374,7 @@ export default function UploadPage() {
             }}
           />
 
-          <div className="upload-limit">
-            Maximum 20 MB per file
-          </div>
+          <div className="upload-limit">Maximum 20 MB per file</div>
         </div>
 
         <div className="supported-formats">
@@ -354,13 +406,14 @@ export default function UploadPage() {
       )}
 
       {workflowError && (
-      <section className="upload-errors" role="alert">
-        <div className="error-heading">
-          <AlertCircle size={19} />
-          Upload or analysis failed
-        </div>
-        <p>{workflowError}</p>
-      </section>
+        <section className="upload-errors" role="alert">
+          <div className="error-heading">
+            <AlertCircle size={19} />
+            Upload or analysis failed
+          </div>
+
+          <p>{workflowError}</p>
+        </section>
       )}
 
       {/* Selected Files */}
@@ -369,16 +422,14 @@ export default function UploadPage() {
         <div className="selected-header">
           <div>
             <h3>Selected Documents</h3>
+
             <p>
               {files.length} {files.length === 1 ? 'file' : 'files'} selected
             </p>
           </div>
 
           {files.length > 0 && (
-            <button
-              className="clear-button"
-              onClick={clearFiles}
-            >
+            <button className="clear-button" onClick={clearFiles}>
               <Trash2 size={16} />
               Clear all
             </button>
@@ -389,9 +440,7 @@ export default function UploadPage() {
           <div className="no-files">
             <FileText size={30} />
             <strong>No documents selected</strong>
-            <span>
-              Your selected documents will appear here.
-            </span>
+            <span>Your selected documents will appear here.</span>
           </div>
         ) : (
           <div className="selected-file-list">
@@ -399,13 +448,17 @@ export default function UploadPage() {
               const Icon = getFileIcon(file.name)
 
               return (
-                <div className="selected-file" key={`${file.name}-${file.lastModified}-${index}`}>
+                <div
+                  className="selected-file"
+                  key={`${file.name}-${file.lastModified}-${index}`}
+                >
                   <div className="selected-file-icon">
                     <Icon size={23} />
                   </div>
 
                   <div className="selected-file-info">
                     <strong>{file.name}</strong>
+
                     <span>
                       {formatFileSize(file.size)} · Ready for review
                     </span>
@@ -452,10 +505,7 @@ export default function UploadPage() {
 
         {files.length > 0 && (
           <div className="upload-actions">
-            <button
-              className="button-secondary"
-              onClick={clearFiles}
-            >
+            <button className="button-secondary" onClick={clearFiles}>
               Cancel
             </button>
 
@@ -484,6 +534,7 @@ export default function UploadPage() {
         {confirmed && (
           <div className="confirmation-message">
             <CheckCircle2 size={19} />
+
             {workflowResult?.findings_count ?? 0} findings saved for
             investigation #{workflowResult?.investigationId}.
           </div>
@@ -495,9 +546,14 @@ export default function UploadPage() {
           <div className="upload-panel-heading">
             <div>
               <h3>Analysis Findings</h3>
-              <p>Automated indicators require human review; they are not proof of fraud.</p>
+
+              <p>
+                Automated indicators require human review; they are not
+                proof of fraud.
+              </p>
             </div>
           </div>
+
           {workflowResult.findings.map((finding, index) => (
             <div key={`${finding.title}-${index}`}>
               <strong>{finding.title}</strong>
@@ -515,6 +571,7 @@ export default function UploadPage() {
 
         <div>
           <strong>Document handling information</strong>
+
           <p>
             Documents are sent to the configured Decipher backend for
             processing and retained in its evidence storage.

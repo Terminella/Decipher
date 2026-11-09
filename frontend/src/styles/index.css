@@ -2090,889 +2090,639 @@ button:focus-visible {
 
 
 
+
+/* =========================================
+   DECIPHER - UPLOAD DOCUMENTS PAGE
+========================================= */
+
 .upload-page {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 24px;
-
   color: var(--text-main);
-
 }
-
-
 
 .upload-heading {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 20px;
-
 }
-
-
 
 .upload-heading h1 {
-
   margin: 0;
-
   color: white;
-
   font-family: 'Manrope', sans-serif;
-
   font-size: 34px;
-
   font-weight: 800;
-
 }
-
-
 
 .upload-heading p {
-
   margin: 9px 0 0;
-
   color: var(--text-secondary);
-
   font-size: 14px;
-
 }
-
-
 
 .secure-label {
-
   display: flex;
-
   align-items: center;
-
   gap: 9px;
-
   padding: 11px 15px;
-
-  border: 1px solid #315C58;
-
+  border: 1px solid #60432F;
   border-radius: 9px;
-
-  background: #3A2419;
-
+  background: #352218;
   color: #E8AD7B;
-
   font-size: 12px;
-
   font-weight: 600;
-
   white-space: nowrap;
-
 }
 
-
-
-/* Upload Panel */
-
-
+/* Common Panels */
 
 .upload-panel,
-
 .selected-files-panel {
-
   padding: 24px;
-
   border: 1px solid var(--border);
-
   border-radius: 13px;
-
   background: var(--bg-card);
-
 }
-
-
 
 .upload-panel-heading,
-
 .selected-header {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 15px;
-
   margin-bottom: 22px;
-
 }
-
-
 
 .upload-panel-heading h3,
-
 .selected-header h3 {
-
   margin: 0;
-
   color: white;
-
   font-size: 17px;
-
   font-weight: 800;
-
 }
-
-
 
 .upload-panel-heading p,
-
 .selected-header p {
-
   margin: 7px 0 0;
-
   color: var(--text-secondary);
-
   font-size: 12px;
-
 }
-
-
 
 .upload-step {
-
   padding: 8px 12px;
-
   border-radius: 7px;
-
   background: #40271C;
-
   color: #E8AD7B;
-
-  font-size: 11px;
-
+  font-size: 10px;
   font-weight: 800;
-
   letter-spacing: 0.7px;
-
 }
 
+/* =========================================
+   INVESTIGATION SELECTION
+========================================= */
 
+.investigation-setup-panel {
+  padding: 27px;
+  background: linear-gradient(145deg, #2C1C14, #241710);
+}
 
-/* Drag and Drop Zone */
+.investigation-setup-heading {
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
 
+.investigation-setup-eyebrow {
+  margin-bottom: 9px;
+  color: #D58A59;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
 
+.investigation-setup-heading h3 {
+  margin: 0;
+  color: #F7F3EF;
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.investigation-setup-heading p {
+  max-width: 650px;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.investigation-setup-step {
+  flex-shrink: 0;
+  padding: 8px 11px;
+  border: 1px solid #59402F;
+  border-radius: 7px;
+  background: #332017;
+  color: #DDA176;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+}
+
+.investigation-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.investigation-choice-card {
+  min-width: 0;
+  padding: 21px;
+  border: 1px solid #493126;
+  border-radius: 11px;
+  background: #21150F;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.investigation-choice-card:hover {
+  border-color: #795039;
+  background: #291A12;
+}
+
+.investigation-choice-card.is-selected {
+  border-color: #B9754B;
+  background: #302016;
+  box-shadow: inset 0 0 0 1px #B9754B20;
+}
+
+.investigation-choice-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  margin-bottom: 15px;
+}
+
+.investigation-choice-icon {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  border: 1px solid #60402E;
+  border-radius: 9px;
+  background: #382319;
+  color: #D58A59;
+}
+
+.investigation-choice-selected {
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #31523C55;
+  color: #82C6A5;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.investigation-choice-card h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.investigation-choice-card > p {
+  min-height: 36px;
+  margin: 7px 0 19px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.investigation-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #C4B2A6;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.investigation-select,
+.investigation-name-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 0 13px;
+  border: 1px solid #59402F;
+  border-radius: 7px;
+  outline: none;
+  background: #19110D;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.investigation-select:focus,
+.investigation-name-input:focus {
+  border-color: #C47749;
+  box-shadow: 0 0 0 3px #C4774920;
+}
+
+.investigation-select option {
+  background: #21150F;
+  color: white;
+}
+
+.investigation-field-hint {
+  display: block;
+  margin-top: 9px;
+  color: #998577;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   DRAG AND DROP ZONE
+========================================= */
 
 .drop-zone {
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
   min-height: 290px;
-
   padding: 30px 20px;
-
   border: 2px dashed #5A3B2B;
-
   border-radius: 12px;
-
   background: #21140F;
-
   text-align: center;
-
   transition: all 0.2s ease;
-
 }
-
-
 
 .drop-zone:hover,
-
 .drop-zone.drag-active {
-
   border-color: #C87543;
-
   background: #352118;
-
 }
-
-
 
 .upload-icon {
-
-  width: 67px;
-
-  height: 67px;
-
   display: grid;
-
+  width: 67px;
+  height: 67px;
   place-items: center;
-
   margin-bottom: 19px;
-
   border-radius: 18px;
-
   background: #C8754322;
-
   color: #E0A06E;
-
 }
-
-
 
 .drop-zone h2 {
-
   margin: 0;
-
   color: white;
-
   font-size: 20px;
-
   font-weight: 700;
-
 }
-
-
 
 .drop-zone p {
-
   margin: 10px 0 19px;
-
   color: var(--text-secondary);
-
   font-size: 13px;
-
 }
-
-
 
 .browse-button {
-
   min-width: 155px;
-
 }
-
-
 
 .upload-limit {
-
   margin-top: 17px;
-
   color: #8292A9;
-
   font-size: 11px;
-
 }
-
-
 
 /* Supported Formats */
 
-
-
 .supported-formats {
-
   display: flex;
-
   align-items: center;
-
   flex-wrap: wrap;
-
   gap: 16px;
-
   margin-top: 20px;
-
 }
-
-
 
 .supported-formats > span {
-
   color: #8292A9;
-
   font-size: 10px;
-
   font-weight: 800;
-
   letter-spacing: 1px;
-
 }
-
-
 
 .format-list {
-
   display: flex;
-
   flex-wrap: wrap;
-
   gap: 8px;
-
 }
-
-
 
 .format-list span {
-
   padding: 6px 10px;
-
   border: 1px solid #4A3024;
-
   border-radius: 6px;
-
   background: #3A251B;
-
   color: #D1DBE9;
-
   font-size: 10px;
-
   font-weight: 700;
-
 }
-
-
 
 /* Validation Errors */
 
-
-
 .upload-errors {
-
   padding: 18px;
-
   border: 1px solid #8D4B52;
-
   border-radius: 10px;
-
   background: #472B37;
-
   color: #FFADB6;
-
 }
-
-
 
 .error-heading {
-
   display: flex;
-
   align-items: center;
-
   gap: 9px;
-
   font-size: 13px;
-
   font-weight: 700;
-
 }
-
-
 
 .upload-errors p {
-
   margin: 10px 0 0;
-
   font-size: 12px;
-
 }
 
-
-
-/* Selected Files */
-
-
+/* =========================================
+   SELECTED DOCUMENTS
+========================================= */
 
 .clear-button {
-
   display: flex;
-
   align-items: center;
-
   gap: 7px;
-
   padding: 9px 12px;
-
   border: 1px solid #75444E;
-
   border-radius: 7px;
-
   background: #482B37;
-
   color: #F28A98;
-
   font-size: 11px;
-
   font-weight: 700;
-
 }
-
-
 
 .clear-button:hover {
-
   background: #5A3440;
-
 }
-
-
 
 .no-files {
-
-  min-height: 180px;
-
   display: flex;
-
+  min-height: 180px;
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 12px;
-
   border: 1px dashed #5A3B2B;
-
   border-radius: 10px;
-
   background: #21140F;
-
   color: #E0A06E;
-
 }
-
-
 
 .no-files strong {
-
   color: white;
-
   font-size: 14px;
-
 }
-
-
 
 .no-files span {
-
   color: var(--text-secondary);
-
   font-size: 12px;
-
 }
-
-
 
 .selected-file-list {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 10px;
-
 }
-
-
 
 .selected-file {
-
   display: flex;
-
   align-items: center;
-
   gap: 14px;
-
   padding: 14px;
-
   border: 1px solid #4A3024;
-
   border-radius: 9px;
-
   background: #332119;
-
 }
-
-
 
 .selected-file-icon {
-
-  width: 43px;
-
-  height: 43px;
-
   display: grid;
-
-  place-items: center;
-
+  width: 43px;
+  height: 43px;
   flex-shrink: 0;
-
+  place-items: center;
   border-radius: 10px;
-
   background: #C8754322;
-
   color: #E0A06E;
-
 }
-
-
 
 .selected-file-info {
-
   display: flex;
-
   flex: 1;
-
   min-width: 0;
-
   flex-direction: column;
-
   gap: 6px;
-
 }
-
-
 
 .selected-file-info strong {
-
   overflow: hidden;
-
   color: white;
-
   font-size: 13px;
-
   text-overflow: ellipsis;
-
   white-space: nowrap;
-
 }
-
-
 
 .selected-file-info span {
-
   color: var(--text-secondary);
-
   font-size: 11px;
-
 }
-
-
 
 .file-ready {
-
   display: flex;
-
   align-items: center;
-
   gap: 6px;
-
   color: #65DDA0;
-
   font-size: 11px;
-
   font-weight: 700;
-
 }
-
-
 
 .remove-file {
-
-  width: 34px;
-
-  height: 34px;
-
   display: grid;
-
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
   place-items: center;
-
   border: 0;
-
   border-radius: 7px;
-
   background: #472B37;
-
   color: #F28A98;
-
 }
-
-
 
 .remove-file:hover {
-
   background: #623542;
-
 }
-
-
 
 /* Upload Summary */
 
-
-
 .upload-summary {
-
   display: grid;
-
   grid-template-columns: repeat(3, 1fr);
-
   gap: 15px;
-
   margin-top: 20px;
-
   padding: 18px;
-
   border: 1px solid #4A3024;
-
   border-radius: 9px;
-
   background: #21140F;
-
 }
-
-
 
 .upload-summary > div {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 7px;
-
 }
-
-
 
 .upload-summary span {
-
   color: var(--text-secondary);
-
   font-size: 11px;
-
 }
-
-
 
 .upload-summary strong {
-
   color: white;
-
   font-size: 15px;
-
 }
-
-
 
 .upload-summary .ready-text {
-
   color: #65DDA0;
-
 }
-
-
 
 .upload-actions {
-
   display: flex;
-
   justify-content: flex-end;
-
   gap: 12px;
-
   margin-top: 22px;
-
 }
 
-
+.upload-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
 
 .confirmation-message {
-
   display: flex;
-
   align-items: flex-start;
-
   gap: 10px;
-
   margin-top: 17px;
-
   padding: 14px;
-
   border: 1px solid #315C58;
-
   border-radius: 8px;
-
   background: #3A2419;
-
   color: #79DFB2;
-
   font-size: 12px;
-
   line-height: 1.6;
-
 }
-
-
 
 /* Information Box */
 
-
-
 .upload-information {
-
   display: flex;
-
   align-items: flex-start;
-
   gap: 14px;
-
   padding: 18px;
-
   border: 1px solid #4A3024;
-
   border-radius: 10px;
-
   background: #21140F;
-
   color: #E0A06E;
-
 }
-
-
 
 .upload-information strong {
-
   color: #E8EEF8;
-
   font-size: 13px;
-
 }
-
-
 
 .upload-information p {
-
   margin: 7px 0 0;
-
   color: var(--text-secondary);
-
   font-size: 11px;
-
   line-height: 1.7;
-
 }
 
-
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media (max-width: 760px) {
-
   .upload-heading {
-
     align-items: flex-start;
-
     flex-direction: column;
-
   }
-
-
 
   .upload-heading h1 {
-
     font-size: 27px;
-
   }
-
-
 
   .upload-panel,
-
   .selected-files-panel {
-
     padding: 17px;
-
   }
 
+  .investigation-setup-heading {
+    flex-direction: column;
+  }
 
+  .investigation-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .investigation-choice-card > p {
+    min-height: 0;
+  }
 
   .drop-zone {
-
     min-height: 260px;
-
     padding: 22px 12px;
-
   }
-
-
 
   .drop-zone h2 {
-
     font-size: 17px;
-
   }
-
-
 
   .upload-summary {
-
     grid-template-columns: 1fr;
-
   }
-
 }
-
-
 
 @media (max-width: 480px) {
-
   .selected-file {
-
     gap: 9px;
-
     padding: 10px;
-
   }
-
-
 
   .file-ready span {
-
     display: none;
-
   }
-
-
 
   .upload-actions {
-
     flex-direction: column;
-
   }
-
-
 
   .upload-actions button {
-
     width: 100%;
-
   }
-
-
 
   .secure-label {
-
     white-space: normal;
-
   }
-
 }
+
 
 
 
