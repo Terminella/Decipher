@@ -63,8 +63,8 @@ FIELD_PATTERNS = {
     ],
 
     "supplier": [
-        r"\b(?:supplier|vendor|payee)\b"
-    ],
+    r"\b(?:supplier|vendor|payee)(?:\s+name)?\b"
+],
 
     "invoice_number": [
         r"\binvoice\s*(?:number|no\.?)\b"
@@ -79,8 +79,15 @@ FIELD_PATTERNS = {
     ],
 
     "amount": [
-        r"\b(?:total\s*amount|approved\s*total|amount\s*(?:transferred|paid)?)\b"
-    ],
+    r"\bgrand\s*total\s*\(\s*(?:figures?|numeric)\s*\)",
+    r"\bgrand\s*total\b(?!\s*\(\s*in\s+words\s*\))",
+    r"\b(?:total\s*amount|approved\s*total|amount\s*(?:transferred|paid)?)\b"
+],
+
+"amount_in_words": [
+    r"\bamount\s+in\s+words\b",
+    r"\bgrand\s*total\s*\(\s*in\s+words\s*\)"
+],
 
     "transaction_id": [
         r"\btransaction\s*(?:id|number|no\.?)\b"
@@ -128,6 +135,7 @@ def extract_fields(text, pages=None):
 
     fields = {}
     field_metadata = {}
+    field_occurrences = []
 
     lines = clean_text(text).splitlines()
 
@@ -288,9 +296,7 @@ def extract_fields(text, pages=None):
         )
 
     for field_name, patterns in FIELD_PATTERNS.items():
-
         for line_index, line in enumerate(lines):
-
             for pattern in patterns:
                 if (
                     field_name == "purchase_order"
@@ -304,6 +310,7 @@ def extract_fields(text, pages=None):
                     line,
                     re.IGNORECASE,
                 )
+
                 if same_line_match:
                     raw_value = same_line_match.group(1)
                 elif re.fullmatch(
@@ -326,15 +333,29 @@ def extract_fields(text, pages=None):
                 if not value:
                     continue
 
-                fields[field_name] = value
                 locations, confidence = value_locations(value)
-                field_metadata[field_name] = {
-                    "confidence": confidence,
-                    "locations": locations,
-                }
-                break
 
-            if field_name in fields:
+                # Keep the legacy dictionary shape for existing consumers.
+                fields.setdefault(field_name, value)
+                field_metadata.setdefault(
+                    field_name,
+                    {
+                        "confidence": confidence,
+                        "locations": locations,
+                    },
+                )
+
+                # Keep every labelled occurrence for within-document checks.
+                location = locations[0] if locations else {}
+                field_occurrences.append({
+                    "field_name": field_name,
+                    "field_value": value,
+                    "confidence": confidence,
+                    "page_number": location.get("page_number", 1),
+                    "bbox": location.get("bbox"),
+                })
+
+                # A line should contribute at most one value for this field.
                 break
 
     # PAN pattern fallback
@@ -373,7 +394,8 @@ def extract_fields(text, pages=None):
     return {
         "fields": fields,
         "field_metadata": field_metadata,
-        "cleaned_text": clean_text(text)
+        "field_occurrences": field_occurrences,
+        "cleaned_text": clean_text(text),
     }
 
 
@@ -388,6 +410,7 @@ def normalize_extraction(ocr_result):
         "document_text": result["cleaned_text"],
         "fields": result["fields"],
         "field_metadata": result["field_metadata"],
+        "field_occurrences": result["field_occurrences"],
         "pages": pages
     }
 
@@ -483,6 +506,14 @@ def label_text(label: Optional[str]) -> str:
 def infer_concept(field: ExtractedField) -> Concept:
     label = label_text(field.label)
     field_type = field.field_type
+    if field_type == FieldType.NAME and re.search(r"\b(supplier|vendor)\b", label):
+        return Concept(
+            "supplier_name",
+            Kind.NAME,
+            "supplier name",
+            0.8,
+            unique=True,
+        )
     if field_type == FieldType.OTHER:
         if re.search(r"\bname\b", label):
             field_type = FieldType.NAME

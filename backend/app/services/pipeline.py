@@ -76,6 +76,8 @@ class DocumentPipeline:
 
                 "field_metadata": extracted["field_metadata"],
 
+                "field_occurrences": extracted["field_occurrences"],
+
                 "pages": extracted["pages"]
             },
 

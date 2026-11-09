@@ -22,7 +22,11 @@ from app.services.normalization import (
 from app.services.contextual_schemas import (
     ExtractedField,
     FieldType,
+    DocumentInput,
+    InvestigationInput,
 )
+
+from app.services.correlation import run_contextual_analysis
 
 
 # =====================================================
@@ -138,6 +142,46 @@ def test_extract_returns_metadata():
 
     assert "field_metadata" in result
     assert "cleaned_text" in result
+
+
+def test_extracts_repeated_supplier_names_and_invoice_totals():
+    text = """Supplier Name
+BluePeak Industrial Supplies
+Supplier Name
+RedStone Trading Company
+Grand Total (figures)
+I23,600.00
+Grand Total (in words)
+Rupees Twenty-Nine Thousand Six Hundred Only
+"""
+
+    result = extract_fields(text)
+    occurrences = result["field_occurrences"]
+
+    suppliers = [
+        item["field_value"]
+        for item in occurrences
+        if item["field_name"] == "supplier"
+    ]
+    figures = [
+        item["field_value"]
+        for item in occurrences
+        if item["field_name"] == "amount"
+    ]
+    words = [
+        item["field_value"]
+        for item in occurrences
+        if item["field_name"] == "amount_in_words"
+    ]
+
+    assert suppliers == [
+        "BluePeak Industrial Supplies",
+        "RedStone Trading Company",
+    ]
+    assert figures == ["I23,600.00"]
+    assert words == ["Rupees Twenty-Nine Thousand Six Hundred Only"]
+    # The original dictionary remains backward compatible (first occurrence).
+    assert result["fields"]["supplier"] == "BluePeak Industrial Supplies"
 
 
 # =====================================================
@@ -483,3 +527,63 @@ def test_display_invalid_date():
     )
 
     assert result is None
+
+
+
+def test_single_document_extraction_generates_duplicate_and_amount_findings():
+    text = """Supplier Name
+BluePeak Industrial Supplies
+Supplier Name
+RedStone Trading Company
+Grand Total (figures)
+I23,600.00
+Grand Total (in words)
+Rupees Twenty-Nine Thousand Six Hundred Only
+"""
+    extracted = extract_fields(text)
+
+    field_types = {
+        "supplier": FieldType.NAME,
+        "amount": FieldType.AMOUNT,
+        "amount_in_words": FieldType.AMOUNT,
+    }
+    labels = {
+        "supplier": "Supplier name",
+        "amount": "Grand Total (figures)",
+        "amount_in_words": "Amount in words",
+    }
+
+    contextual_fields = [
+        ExtractedField(
+            field_id=str(index),
+            label=labels[item["field_name"]],
+            field_type=field_types[item["field_name"]],
+            value=item["field_value"],
+            page=item["page_number"],
+            ocr_confidence=item["confidence"],
+        )
+        for index, item in enumerate(extracted["field_occurrences"])
+    ]
+
+    result = run_contextual_analysis(
+        InvestigationInput(
+            investigation_id="single-document-regression",
+            documents=[
+                DocumentInput(
+                    document_id="single-test",
+                    filename="single-anomaly-test.pdf",
+                    fields=contextual_fields,
+                )
+            ],
+        ),
+        use_llm=False,
+    )
+
+    anomaly_types = {finding.anomaly_type for finding in result.findings}
+
+    assert "conflicting_values_in_document" in {
+        anomaly.value for anomaly in anomaly_types
+    }
+    assert "amount_words_mismatch" in {
+        anomaly.value for anomaly in anomaly_types
+    }

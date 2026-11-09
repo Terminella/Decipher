@@ -65,6 +65,20 @@ def _extract_fields(result: dict) -> list[dict]:
 
     output = []
 
+    occurrences = extracted.get("field_occurrences")
+    if isinstance(occurrences, list):
+        for item in occurrences:
+            if not isinstance(item, dict):
+                continue
+            output.append({
+                "field_name": str(item.get("field_name", "unknown")),
+                "field_value": str(item.get("field_value", "")),
+                "confidence": item.get("confidence"),
+                "page_number": item.get("page_number", 1),
+                "bbox": item.get("bbox"),
+            })
+        return output
+
     if isinstance(fields, dict):
         for key, value in fields.items():
             field_metadata = metadata.get(key, {}) if isinstance(metadata, dict) else {}
@@ -192,6 +206,7 @@ def _contextual_field_type(field_name):
         "payer": "name",
         "document_date": "date",
         "amount": "amount",
+        "amount_in_words": "amount",
         "purchase_order": "document_reference",
         "invoice_number": "document_reference",
         "transaction_id": "document_reference",
@@ -205,6 +220,7 @@ def _contextual_field_label(field_name):
         "payer": "Supplier name",
         "document_date": "Document date",
         "amount": "Total amount",
+        "amount_in_words": "Amount in words",
     }.get(field_name, field_name.replace("_", " "))
 
 
